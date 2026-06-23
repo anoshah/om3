@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة تبديل الأماكن المباشرة</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #ecf0f1; margin: 0; padding: 20px; }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        
+        /* شاشة الدخول */
+        #login-screen { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+        .input-group { margin-bottom: 15px; }
+        input { width: 90%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 16px; margin-top: 5px; }
+        .btn { background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; margin-bottom: 10px; }
+        .btn:hover { background-color: #2980b9; }
+        .btn-green { background-color: #2ecc71; }
+        .btn-green:hover { background-color: #27ae60; }
+        .error { color: #e74c3c; font-weight: bold; font-size: 14px; margin-top: 10px; }
+
+        /* شاشة اللعبة */
+        #game-screen { display: none; flex-direction: column; align-items: center; }
+        .room-info { background-color: #34495e; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 18px; }
+        
+        .scoreboard { display: flex; justify-content: space-between; align-items: center; width: 420px; margin-bottom: 20px; background-color: #fff; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .score-box { text-align: center; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 18px; min-width: 80px; }
+        .red-box { background-color: #fadbd8; color: #c0392b; border: 2px solid #e74c3c; }
+        .green-box { background-color: #d5f5e3; color: #27ae60; border: 2px solid #2ecc71; }
+        .score-number { display: block; font-size: 28px; margin-top: 5px; }
+        .center-info { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .round-badge { background-color: #34495e; color: #fff; padding: 5px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; }
+        
+        #status { width: 380px; text-align: center; padding: 10px 20px; font-size: 20px; font-weight: bold; border-radius: 8px; margin-bottom: 20px; }
+        .turn-red { background-color: #fadbd8; color: #c0392b; }
+        .turn-green { background-color: #d5f5e3; color: #27ae60; }
+        
+        #game-board { position: relative; width: 400px; height: 500px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .piece { position: absolute; width: 40px; height: 40px; border-radius: 50%; z-index: 3; cursor: pointer; transition: top 0.3s ease, left 0.3s ease; box-shadow: 0 3px 6px rgba(0,0,0,0.3); margin-top: -20px; margin-left: -20px; }
+        .piece.red { background-color: #e74c3c; }
+        .piece.green { background-color: #2ecc71; }
+        .piece.selected { box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.9); transform: scale(1.1); }
+        
+        .arrow { position: absolute; width: 30px; height: 30px; background-color: #34495e; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; cursor: pointer; z-index: 4; margin-top: -15px; margin-left: -15px; }
+        .arrow:hover { background-color: #f39c12; }
+
+        /* أيقونة الصوت */
+        #voice-status { display: flex; align-items: center; gap: 5px; color: #27ae60; font-weight: bold; margin-top: 10px; }
+        .mic-icon { width: 15px; height: 15px; background-color: #27ae60; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); } 100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); } }
+    </style>
+</head>
+<body>
+
+    <h1>لعبة تبديل الأماكن</h1>
+
+    <div id="login-screen">
+        <h2>أهلاً بك</h2>
+        <div class="input-group">
+            <input type="text" id="playerName" placeholder="أدخل اسمك هنا...">
+        </div>
+        <button class="btn btn-green" onclick="createRoom()">إنشاء غرفة جديدة</button>
+        <hr>
+        <div class="input-group">
+            <input type="number" id="roomCodeInput" placeholder="أدخل رقم الغرفة (3 أرقام)">
+        </div>
+        <button class="btn" onclick="joinRoom()">انضمام للغرفة</button>
+        <div id="error-msg" class="error"></div>
+    </div>
+
+    <div id="game-screen">
+        <div class="room-info">رقم الغرفة: <span id="displayRoomCode">---</span> | لونك: <span id="displayColor">---</span></div>
+        <div id="voice-status" style="display:none;"><div class="mic-icon"></div> الدردشة الصوتية مفعلة</div>
+        <audio id="remoteAudio" autoplay></audio>
+
+        <div class="scoreboard">
+            <div class="score-box red-box">الأحمر <span id="red-score" class="score-number">0</span></div>
+            <div class="center-info">
+                <div id="round-counter" class="round-badge">الجولة: 1</div>
+                <button class="btn" onclick="requestNewRound()" id="newRoundBtn" style="display:none;">جولة جديدة 🔄</button>
+            </div>
+            <div class="score-box green-box">الأخضر <span id="green-score" class="score-number">0</span></div>
+        </div>
+
+        <div id="status" class="turn-red">في انتظار انضمام اللاعب الثاني...</div>
+
+        <div id="game-board">
+            <svg>
+                <line x1="100" y1="100" x2="300" y2="100" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="100" y1="200" x2="300" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="100" y1="300" x2="300" y2="300" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="100" y1="400" x2="300" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="100" y1="100" x2="100" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="200" y1="100" x2="200" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="300" y1="100" x2="300" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="200" y1="200" x2="200" y2="300" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="100" y1="300" x2="100" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="200" y1="300" x2="200" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="300" y1="300" x2="300" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        let myColor = null;
+        let currentRoom = null;
+        let isGameStarted = false;
+
+        // WebRTC Variables
+        let localStream;
+        let peerConnection;
+        const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+        // Game Variables
+        const nodes = [
+            { id: 0, x: 100, y: 100, edges: [1, 3] }, { id: 1, x: 200, y: 100, edges: [0, 2, 4] }, { id: 2, x: 300, y: 100, edges: [1, 5] },
+            { id: 3, x: 100, y: 200, edges: [0, 4] }, { id: 4, x: 200, y: 200, edges: [1, 3, 5, 7] }, { id: 5, x: 300, y: 200, edges: [2, 4] },
+            { id: 6, x: 100, y: 300, edges: [7, 9] }, { id: 7, x: 200, y: 300, edges: [4, 6, 8, 10] }, { id: 8, x: 300, y: 300, edges: [7, 11] },
+            { id: 9, x: 100, y: 400, edges: [6, 10] }, { id: 10, x: 200, y: 400, edges: [7, 9, 11] }, { id: 11, x: 300, y: 400, edges: [8, 10] }
+        ];
+        let pieces = [];
+        let currentPlayer = 'red';
+        let selectedPiece = null;
+        let isGameOver = false;
+        let currentRound = 1;
+        let redWins = 0; let greenWins = 0;
+
+        // --- Socket.IO & Connection Logic --- //
+
+        function showGameScreen() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            document.getElementById('displayRoomCode').innerText = currentRoom;
+            document.getElementById('displayColor').innerText = myColor === 'red' ? 'أحمر' : 'أخضر';
+        }
+
+        async function createRoom() {
+            const name = document.getElementById('playerName').value;
+            if(!name) return alert("الرجاء إدخال اسمك");
+            await setupVoice();
+            socket.emit('createRoom', name);
+        }
+
+        function joinRoom() {
+            const name = document.getElementById('playerName').value;
+            const room = document.getElementById('roomCodeInput').value;
+            if(!name || !room) return alert("الرجاء إدخال الاسم ورقم الغرفة");
+            socket.emit('joinRoom', { playerName: name, roomCode: room });
+        }
+
+        socket.on('roomCreated', (data) => {
+            myColor = data.color; currentRoom = data.roomCode; showGameScreen();
+        });
+
+        socket.on('roomJoined', async (data) => {
+            myColor = data.color; currentRoom = data.roomCode; showGameScreen();
+            await setupVoice();
+        });
+
+        socket.on('errorMsg', (msg) => { document.getElementById('error-msg').innerText = msg; });
+
+        // --- WebRTC (Voice Chat) Logic --- //
+        
+        async function setupVoice() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                document.getElementById('voice-status').style.display = 'flex';
+                
+                peerConnection = new RTCPeerConnection(configuration);
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+                peerConnection.ontrack = event => {
+                    document.getElementById('remoteAudio').srcObject = event.streams[0];
+                };
+
+                peerConnection.onicecandidate = event => {
+                    if (event.candidate) {
+                        socket.emit('ice-candidate', { room: currentRoom, candidate: event.candidate });
+                    }
+                };
+            } catch (err) {
+                console.error("لم نتمكن من الوصول للميكروفون:", err);
+            }
+        }
+
+        // عند بدء اللعبة، اللاعب الأحمر ينشئ العرض (Offer)
+        socket.on('gameStart', async (players) => {
+            isGameStarted = true;
+            initGame();
+            document.getElementById('status').innerText = 'دور اللاعب: الأحمر';
+            document.getElementById('status').className = 'turn-red';
+            
+            if (myColor === 'red' && peerConnection) {
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                socket.emit('offer', { room: currentRoom, offer });
+            }
+        });
+
+        socket.on('offer', async (offer) => {
+            if(!peerConnection) await setupVoice();
+            await peerConnection.setRemoteDescription(offer);
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.emit('answer', { room: currentRoom, answer });
+        });
+
+        socket.on('answer', async (answer) => {
+            await peerConnection.setRemoteDescription(answer);
+        });
+
+        socket.on('ice-candidate', async (candidate) => {
+            try { await peerConnection.addIceCandidate(candidate); } catch(e) {}
+        });
+
+        // --- Game Logic --- //
+
+        function setupPieces() {
+            pieces = [
+                { id: 'r1', player: 'red', nodeId: 0 }, { id: 'r2', player: 'red', nodeId: 1 }, { id: 'r3', player: 'red', nodeId: 2 },
+                { id: 'g1', player: 'green', nodeId: 9 }, { id: 'g2', player: 'green', nodeId: 10 }, { id: 'g3', player: 'green', nodeId: 11 }
+            ];
+        }
+
+        function initGame() {
+            setupPieces(); drawPieces();
+        }
+
+        function drawPieces() {
+            document.querySelectorAll('.piece').forEach(el => el.remove());
+            pieces.forEach(p => {
+                const pieceEl = document.createElement('div');
+                pieceEl.id = p.id; pieceEl.className = `piece ${p.player}`;
+                pieceEl.onclick = () => handlePieceClick(p);
+                document.getElementById('game-board').appendChild(pieceEl);
+            });
+            updatePiecesPosition();
+        }
+
+        function updatePiecesPosition() {
+            pieces.forEach(p => {
+                const node = nodes[p.nodeId];
+                const pieceEl = document.getElementById(p.id);
+                if(pieceEl) {
+                    pieceEl.style.left = `${node.x}px`; pieceEl.style.top = `${node.y}px`;
+                    pieceEl.classList.toggle('selected', selectedPiece && selectedPiece.id === p.id);
+                }
+            });
+        }
+
+        function handlePieceClick(piece) {
+            if (!isGameStarted || isGameOver || currentPlayer !== myColor || piece.player !== myColor) return;
+
+            if (selectedPiece && selectedPiece.id === piece.id) {
+                selectedPiece = null; clearArrows();
+            } else {
+                selectedPiece = piece; showArrows(piece);
+            }
+            updatePiecesPosition();
+        }
+
+        function clearArrows() { document.querySelectorAll('.arrow').forEach(a => a.remove()); }
+
+        function showArrows(piece) {
+            clearArrows();
+            const currentNode = nodes[piece.nodeId];
+            currentNode.edges.forEach(neighborId => {
+                const isOccupied = pieces.some(p => p.nodeId === neighborId);
+                if (!isOccupied) createArrow(currentNode, nodes[neighborId]);
+            });
+        }
+
+        function createArrow(fromNode, toNode) {
+            const arrowEl = document.createElement('div');
+            arrowEl.className = 'arrow';
+            let symbol = '', offsetX = 0, offsetY = 0, distance = 45; 
+            if (toNode.y < fromNode.y) { symbol = '↑'; offsetY = -distance; }
+            else if (toNode.y > fromNode.y) { symbol = '↓'; offsetY = distance; }
+            else if (toNode.x < fromNode.x) { symbol = '←'; offsetX = -distance; }
+            else if (toNode.x > fromNode.x) { symbol = '→'; offsetX = distance; }
+
+            arrowEl.innerHTML = symbol;
+            arrowEl.style.left = `${fromNode.x + offsetX}px`; arrowEl.style.top = `${fromNode.y + offsetY}px`;
+            
+            arrowEl.onclick = () => {
+                const data = { room: currentRoom, pieceId: selectedPiece.id, targetId: toNode.id };
+                socket.emit('move', data);
+                executeMove(data.pieceId, data.targetId);
+            };
+            document.getElementById('game-board').appendChild(arrowEl);
+        }
+
+        socket.on('move', (data) => {
+            executeMove(data.pieceId, data.targetId);
+        });
+
+        function executeMove(pieceId, targetNodeId) {
+            const p = pieces.find(p => p.id === pieceId);
+            p.nodeId = targetNodeId;
+            selectedPiece = null;
+            clearArrows();
+            updatePiecesPosition();
+            
+            if (!checkWin()) switchTurn();
+        }
+
+        function switchTurn() {
+            currentPlayer = currentPlayer === 'red' ? 'green' : 'red';
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = currentPlayer === 'red' ? 'دور اللاعب: الأحمر' : 'دور اللاعب: الأخضر';
+            statusEl.className = currentPlayer === 'red' ? 'turn-red' : 'turn-green';
+        }
+
+        function checkWin() {
+            const redWinNodes = [9, 10, 11];
+            const redCurrent = pieces.filter(p => p.player === 'red').map(p => p.nodeId);
+            const greenWinNodes = [0, 1, 2];
+            const greenCurrent = pieces.filter(p => p.player === 'green').map(p => p.nodeId);
+
+            if (redWinNodes.every(id => redCurrent.includes(id))) {
+                redWins++; document.getElementById('red-score').textContent = redWins;
+                endGame('اللاعب الأحمر هو الفائز! 🏆'); return true;
+            } else if (greenWinNodes.every(id => greenCurrent.includes(id))) {
+                greenWins++; document.getElementById('green-score').textContent = greenWins;
+                endGame('اللاعب الأخضر هو الفائز! 🏆'); return true;
+            }
+            return false;
+        }
+
+        function endGame(msg) {
+            isGameOver = true;
+            document.getElementById('status').textContent = msg;
+            document.getElementById('status').className = 'turn-red'; // To reset styling
+            document.getElementById('newRoundBtn').style.display = 'block';
+        }
+
+        function requestNewRound() {
+            socket.emit('newRound', currentRoom);
+            startNewRoundLocal();
+        }
+
+        socket.on('newRound', () => {
+            startNewRoundLocal();
+        });
+
+        function startNewRoundLocal() {
+            currentRound++;
+            document.getElementById('round-counter').textContent = `الجولة: ${currentRound}`;
+            document.getElementById('newRoundBtn').style.display = 'none';
+            currentPlayer = 'red';
+            isGameOver = false;
+            selectedPiece = null;
+            document.getElementById('status').textContent = 'دور اللاعب: الأحمر';
+            document.getElementById('status').className = 'turn-red';
+            initGame();
+        }
+
+    </script>
+</body>
+</html>
