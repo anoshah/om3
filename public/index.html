@@ -286,36 +286,35 @@
             }
             
             .scoreboard {
-                border-radius: 14px;
-                box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+                border-radius: 12px;
+                box-shadow: 0 1px 10px rgba(0,0,0,0.06);
             }
             
             .player-card {
-                padding: 12px 10px;
-            }
-            
-            .player-avatar {
-                width: 30px; height: 30px;
-                font-size: 13px;
+                padding: 10px 14px;
             }
             
             .player-name {
-                font-size: 11px;
-                max-width: 90px;
+                font-size: 12px;
+                max-width: 100px;
             }
             
             .score-num {
-                font-size: 24px;
+                font-size: 28px;
             }
             
             .center-panel {
                 padding: 8px 14px;
-                min-width: 75px;
+                min-width: 80px;
             }
             
-            .round-badge, .room-code-badge {
-                padding: 4px 12px;
+            .room-code-badge {
+                padding: 3px 10px;
                 font-size: 10px;
+            }
+            
+            .round-info {
+                font-size: 11px;
             }
             
             #status {
@@ -343,16 +342,11 @@
         /* شاشة الجوال الصغيرة */
         @media (max-width: 380px) {
             .scoreboard {
-                border-radius: 12px;
+                border-radius: 10px;
             }
             
             .player-card {
                 padding: 8px 6px;
-            }
-            
-            .player-avatar {
-                width: 24px; height: 24px;
-                font-size: 10px;
             }
             
             .player-name {
@@ -366,12 +360,16 @@
             
             .center-panel {
                 padding: 6px 8px;
-                min-width: 60px;
+                min-width: 55px;
             }
             
-            .round-badge {
+            .room-code-badge {
+                font-size: 8px;
+                padding: 2px 6px;
+            }
+            
+            .round-info {
                 font-size: 9px;
-                padding: 3px 8px;
             }
             
             #status {
@@ -383,81 +381,57 @@
         /* لوحة النتائج */
         .scoreboard { 
             display: flex; justify-content: space-between; align-items: stretch;
-            width: 100%; margin-bottom: 10px; background: #ffffff; 
-            padding: 0; border-radius: 14px; overflow: hidden;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.05); 
-            border: 1px solid #f1f5f9;
+            width: 100%; margin-bottom: 8px; background: #ffffff; 
+            padding: 0; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05); 
+            border: 1px solid #e5e7eb;
         }
         .player-card { 
-            text-align: center; padding: 10px 8px; flex: 1; 
+            text-align: center; padding: 10px 12px; flex: 1; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: all 0.3s; position: relative;
+            gap: 2px;
         }
-        .player-card.active { transform: scale(1.01); }
         
-        .red-card { background: linear-gradient(180deg, #fef2f2 0%, #fff5f5 100%); }
-        .red-card.active { background: linear-gradient(180deg, #fee2e2 0%, #fecaca 100%); box-shadow: inset 0 -3px 0 #ef4444; }
+        .red-card { background: #fef2f2; }
+        .red-card.active { background: #fee2e2; box-shadow: inset 0 -3px 0 #ef4444; }
         
-        .green-card { background: linear-gradient(180deg, #f0fdf4 0%, #f7fef9 100%); }
-        .green-card.active { background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%); box-shadow: inset 0 -3px 0 #22c55e; }
-        
-        .player-avatar {
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; margin-bottom: 4px;
-        }
-        .red-card .player-avatar { background: #fecaca; }
-        .green-card .player-avatar { background: #bbf7d0; }
+        .green-card { background: #f0fdf4; }
+        .green-card.active { background: #dcfce7; box-shadow: inset 0 -3px 0 #22c55e; }
         
         .player-name { 
             font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; 
-            text-overflow: ellipsis; max-width: 70px; margin-bottom: 2px;
+            text-overflow: ellipsis; max-width: 80px;
         }
-        .red-card .player-name { color: #b91c1c; }
-        .green-card .player-name { color: #15803d; }
+        .red-card .player-name { color: #991b1b; }
+        .green-card .player-name { color: #166534; }
         
         .score-num { 
-            font-size: 22px; font-weight: 800; line-height: 1;
+            font-size: 24px; font-weight: 800; line-height: 1;
         }
         .red-card .score-num { color: #dc2626; }
         .green-card .score-num { color: #16a34a; }
         
-        .player-label {
-            font-size: 9px; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.5px; margin-top: 2px;
-        }
-        .red-card .player-label { color: #f87171; }
-        .green-card .player-label { color: #4ade80; }
-        
         .center-panel {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 8px 12px;
-            background: #f8fafc;
-            border-left: 1px solid #f1f5f9;
-            border-right: 1px solid #f1f5f9;
+            padding: 8px 10px;
+            background: #f9fafb;
+            border-left: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
             min-width: 70px;
-            gap: 6px;
+            gap: 4px;
         }
-        
-        .round-badge {
-            background: #1e293b;
-            color: #fff;
-            padding: 3px 10px;
-            border-radius: 16px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+
+        .center-info {
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
         }
 
         .room-code-badge {
             background: #3b82f6;
             color: #fff;
-            padding: 3px 10px;
-            border-radius: 16px;
-            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 9px;
             font-weight: 700;
-            letter-spacing: 0.5px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -465,14 +439,20 @@
         .room-code-badge:hover {
             background: #2563eb;
         }
+
+        .round-info {
+            font-size: 10px;
+            font-weight: 700;
+            color: #6b7280;
+        }
         
         .btn-new-round {
             background: none;
-            border: 1px solid #e2e8f0;
-            color: #64748b;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
             padding: 4px 8px;
             border-radius: 6px;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -480,26 +460,9 @@
             display: none;
         }
         .btn-new-round:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #475569;
-        }
-
-        .btn-exit-small {
-            background: none;
-            border: 1px solid #fecaca;
-            color: #ef4444;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .btn-exit-small:hover {
-            background: #fef2f2;
-            border-color: #ef4444;
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #374151;
         }
         
         #status { 
@@ -772,24 +735,21 @@
 
         <div class="scoreboard">
             <div class="player-card red-card" id="red-card">
-                <div class="player-avatar">🔴</div>
                 <div id="red-name" class="player-name">---</div>
                 <span id="red-score" class="score-num">0</span>
-                <span class="player-label">أحمر</span>
             </div>
             
             <div class="center-panel">
-                <div id="room-code-badge" class="room-code-badge" style="display:none;">الغرفة: <span id="displayRoomCode">---</span></div>
-                <div class="round-badge">الجولة <span id="round-counter">1</span></div>
+                <div class="center-info">
+                    <span id="room-code-badge" class="room-code-badge" style="display:none;">غرفة: <span id="displayRoomCode">---</span></span>
+                    <span class="round-info">الجولة <span id="round-counter">1</span></span>
+                </div>
                 <button class="btn-new-round" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة</button>
-                <button class="btn-exit-small" onclick="exitGame()">خروج</button>
             </div>
 
             <div class="player-card green-card" id="green-card">
-                <div class="player-avatar">🟢</div>
                 <div id="green-name" class="player-name">في الانتظار...</div>
                 <span id="green-score" class="score-num">0</span>
-                <span class="player-label">أخضر</span>
             </div>
         </div>
 
