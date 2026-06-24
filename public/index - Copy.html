@@ -124,7 +124,9 @@
             font-family: inherit;
         }
 
-        input::placeholder { color: #94a3b8; }
+        input::placeholder { 
+            color: #94a3b8; 
+        }
 
         input:focus { 
             border-color: #7c3aed; 
@@ -133,7 +135,9 @@
         }
 
         input:focus + .input-icon,
-        input:focus ~ .input-icon { color: #7c3aed; }
+        input:focus ~ .input-icon {
+            color: #7c3aed;
+        }
 
         .btn { 
             border: none; padding: 14px; border-radius: 12px; 
@@ -143,32 +147,67 @@
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
-        .btn:active { transform: translateY(0) scale(0.98); }
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active { 
+            transform: translateY(0) scale(0.98); 
+        }
 
         .btn-primary { 
             background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
         }
-        .btn-primary:hover { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+        }
 
         .btn-secondary { 
             background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
         }
-        .btn-secondary:hover { background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%); }
 
-        .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
-        .divider-line { flex: 1; height: 1px; background: #e2e8f0; }
-        .divider-text { color: #94a3b8; font-size: 12px; font-weight: 500; }
-
-        .error { 
-            color: #dc2626; font-weight: 600; font-size: 13px; margin-top: 12px;
-            padding: 10px; background: #fef2f2; border-radius: 8px;
-            border: 1px solid #fecaca; display: none;
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
         }
 
-        .error:not(:empty) { display: block; animation: shake 0.5s ease; }
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 20px 0;
+        }
+
+        .divider-line {
+            flex: 1; height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider-text {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .error { 
+            color: #dc2626; 
+            font-weight: 600; 
+            font-size: 13px; 
+            margin-top: 12px;
+            padding: 10px;
+            background: #fef2f2;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+            display: none;
+        }
+
+        .error:not(:empty) {
+            display: block;
+            animation: shake 0.5s ease;
+        }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -176,182 +215,446 @@
             75% { transform: translateX(5px); }
         }
 
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
 
         .loading-spinner {
-            display: none; width: 20px; height: 20px;
+            display: none;
+            width: 20px; height: 20px;
             border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff; border-radius: 50%;
+            border-top-color: #fff;
+            border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
-        .btn-offline { background: #64748b; box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3); }
-        .btn-offline:hover { background: #475569; }
+        .btn-offline { 
+            background: #64748b;
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-offline:hover {
+            background: #475569;
+            box-shadow: 0 6px 16px rgba(100, 116, 139, 0.4);
+        }
 
         /* شاشة اللعبة */
         #game-screen { 
-            display: none; flex-direction: column; align-items: center; justify-content: flex-start;
-            width: 100%; max-width: 600px; 
+            display: none; flex-direction: column; align-items: center; 
+            width: 100%; max-width: 500px; 
             height: 100vh; height: 100dvh;
-            padding: 15px; box-sizing: border-box;
-            overflow-y: auto;
-            position: relative;
+            padding: 10px; box-sizing: border-box;
+            overflow: hidden;
         }
 
         /* شاشة الكمبيوتر */
         @media (min-width: 768px) {
-            body { background: #f1f5f9; }
-            h1 { font-size: 28px; margin-bottom: 20px; }
-            #login-screen { padding: 36px 40px; max-width: 420px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); max-height: none; }
+            body {
+                background: #f1f5f9;
+                justify-content: center;
+                height: 100vh;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            
+            #login-screen {
+                padding: 36px 40px;
+                max-width: 420px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                max-height: none;
+            }
             
             #game-screen {
-                justify-content: center;
+                max-width: 450px;
+                width: 100%;
                 height: auto;
-                max-height: 95vh;
-                padding: 24px;
+                padding: 16px;
                 background: #ffffff;
                 border-radius: 20px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+                overflow: visible;
             }
-            .score-num { font-size: 24px !important; }
-            .player-name { font-size: 15px !important; }
+            
+            .scoreboard {
+                border-radius: 14px;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            }
+            
+            .player-card {
+                padding: 14px 16px;
+            }
+            
+            .player-name {
+                font-size: 14px;
+                max-width: 120px;
+            }
+            
+            .score-num {
+                font-size: 32px;
+            }
+            
+            .center-panel {
+                padding: 10px 16px;
+                min-width: 90px;
+            }
+            
+            .room-code-badge {
+                padding: 4px 12px;
+                font-size: 12px;
+            }
+            
+            .round-info {
+                font-size: 13px;
+            }
+            
+            .btn-new-round {
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+            
+            .btn-mic-small {
+                padding: 5px 10px;
+                font-size: 13px;
+            }
+            
+            #status {
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 12px;
+            }
+            
+            #game-wrapper {
+                border-radius: 16px;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            }
         }
 
-        /* لوحة النتائج المعدلة بشكل احترافي */
+        /* شاشة الجوال الكبيرة */
+        @media (min-width: 480px) and (max-width: 767px) {
+            #game-screen {
+                max-width: 440px;
+            }
+        }
+
+        /* شاشة الجوال الصغيرة */
+        @media (max-width: 380px) {
+            .scoreboard {
+                border-radius: 10px;
+            }
+            
+            .player-card {
+                padding: 8px 6px;
+            }
+            
+            .player-name {
+                font-size: 10px;
+                max-width: 60px;
+            }
+            
+            .score-num {
+                font-size: 20px;
+            }
+            
+            .center-panel {
+                padding: 6px 8px;
+                min-width: 55px;
+            }
+            
+            .room-code-badge {
+                font-size: 8px;
+                padding: 2px 6px;
+            }
+            
+            .round-info {
+                font-size: 9px;
+            }
+            
+            #status {
+                font-size: 12px;
+                padding: 6px;
+            }
+        }
+
+        /* لوحة النتائج */
         .scoreboard { 
             display: flex; justify-content: space-between; align-items: stretch;
-            width: 100%; margin-bottom: 12px; background: transparent; 
-            padding: 0; border-radius: 0; box-shadow: none; border: none;
-            gap: 8px;
+            width: 100%; margin-bottom: 8px; background: #ffffff; 
+            padding: 0; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05); 
+            border: 1px solid #e5e7eb;
         }
-        
         .player-card { 
-            text-align: center; padding: 10px; flex: 1; 
+            text-align: center; padding: 10px 12px; flex: 1; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border-radius: 12px; border: 1px solid #e5e7eb;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            transition: all 0.3s;
+            gap: 2px;
         }
         
         .red-card { background: #fef2f2; }
-        .red-card.active { background: #fee2e2; border-color: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); transform: translateY(-2px); }
+        .red-card.active { background: #fee2e2; box-shadow: inset 0 -3px 0 #ef4444; }
         
         .green-card { background: #f0fdf4; }
-        .green-card.active { background: #dcfce7; border-color: #22c55e; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15); transform: translateY(-2px); }
+        .green-card.active { background: #dcfce7; box-shadow: inset 0 -3px 0 #22c55e; }
         
         .player-name { 
             font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; 
-            text-overflow: ellipsis; max-width: 100px; margin-bottom: 4px;
+            text-overflow: ellipsis; max-width: 90px;
         }
         .red-card .player-name { color: #991b1b; }
         .green-card .player-name { color: #166534; }
         
         .score-num { 
-            font-size: 20px; font-weight: 900; line-height: 1;
+            font-size: 28px; font-weight: 800; line-height: 1;
         }
         .red-card .score-num { color: #dc2626; }
         .green-card .score-num { color: #16a34a; }
         
         .center-panel {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 8px 10px; background: #f9fafb;
-            border: 1px solid #e5e7eb; border-radius: 12px;
-            min-width: 80px; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 8px 12px;
+            background: #f9fafb;
+            border-left: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            min-width: 80px;
+            gap: 5px;
         }
 
-        .center-info { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .room-code-badge { background: #3b82f6; color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
-        .round-info { font-size: 12px; font-weight: 700; color: #374151; }
+        .center-info {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+
+        .room-code-badge {
+            background: #3b82f6;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .room-code-badge:hover {
+            background: #2563eb;
+        }
+
+        .round-info {
+            font-size: 12px;
+            font-weight: 700;
+            color: #374151;
+        }
         
         .btn-new-round {
-            background: none; border: 1px solid #d1d5db; color: #4b5563;
-            padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s; font-family: inherit; display: none;
+            background: none;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: none;
         }
-        .btn-new-round:hover { background: #e5e7eb; }
-        .btn-mic-small { background: #dcfce7; border: 1px solid #86efac; color: #16a34a; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
-        .btn-mic-small.muted { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+        .btn-new-round:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+        .btn-mic-small {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            color: #16a34a;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-mic-small:hover {
+            background: #bbf7d0;
+        }
+
+        .btn-mic-small.muted {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
         
         #status { 
-            width: 100%; text-align: center; padding: 10px; font-size: 14px; 
-            font-weight: 700; border-radius: 12px; margin-bottom: 12px; transition: 0.3s;
+            width: 100%; text-align: center; padding: 8px; font-size: 13px; 
+            font-weight: 700; border-radius: 10px; margin-bottom: 10px; transition: 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
         .turn-red { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
         .turn-green { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .win-msg { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .win-msg { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; animation: pulse-status 1.5s infinite; }
+
+        @keyframes pulse-status {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 0 4px rgba(251, 191, 36, 0); }
+        }
+
+        @keyframes blink-text {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
 
         /* شاشة الاحتفال */
         .celebration-overlay {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
-            z-index: 1000; align-items: center; justify-content: center;
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
         }
-        .celebration-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .celebration-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
         .celebration-card {
-            background: #ffffff; border-radius: 28px; padding: 40px 35px;
-            text-align: center; width: calc(100% - 48px); max-width: 340px;
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px 35px;
+            text-align: center;
+            width: calc(100% - 48px);
+            max-width: 340px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
             animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
         }
-        @keyframes bounceIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        .celebration-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
-        .celebration-card.red-win::before { background: linear-gradient(90deg, #ef4444, #f97316, #ef4444); }
-        .celebration-card.green-win::before { background: linear-gradient(90deg, #22c55e, #10b981, #22c55e); }
-        .celebration-card.neutral-win::before { background: linear-gradient(90deg, #94a3b8, #cbd5e1, #94a3b8); }
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
-        .trophy-icon { font-size: 64px; margin-bottom: 16px; animation: trophyBounce 1s ease infinite; }
-        @keyframes trophyBounce { 0%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(-8px) rotate(-5deg); } 75% { transform: translateY(-8px) rotate(5deg); } }
+        .celebration-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
 
-        .celebration-title { font-size: 16px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; }
-        .celebration-winner { font-size: 28px; font-weight: 900; margin-bottom: 8px; line-height: 1.3; }
-        .celebration-winner.red { color: #dc2626; } .celebration-winner.green { color: #16a34a; } .celebration-winner.neutral { color: #475569; }
-        .celebration-score { font-size: 14px; color: #64748b; margin-bottom: 24px; font-weight: 500; }
-        .celebration-score span { font-weight: 800; font-size: 20px; }
-        .celebration-score .red-text { color: #dc2626; } .celebration-score .green-text { color: #16a34a; }
+        .celebration-card.red-win::before {
+            background: linear-gradient(90deg, #ef4444, #f97316, #ef4444);
+        }
 
-        .confetti { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall 3s ease-in-out infinite; }
-        @keyframes confettiFall { 0% { transform: translateY(-100%) rotate(0deg); opacity: 1; } 100% { transform: translateY(400px) rotate(720deg); opacity: 0; } }
+        .celebration-card.green-win::before {
+            background: linear-gradient(90deg, #22c55e, #10b981, #22c55e);
+        }
 
-        @keyframes borderTurnBlink { 0% { box-shadow: 0 0 0 4px rgba(241, 196, 15, 1), 0 4px 8px rgba(0,0,0,0.3); } 100% { box-shadow: 0 0 0 2px rgba(241, 196, 15, 0), 0 4px 8px rgba(0,0,0,0.3); } }
-        .piece.blinking-border { animation: borderTurnBlink 0.6s infinite alternate; }
-        .piece.selected { box-shadow: 0 0 0 4px rgba(241, 196, 15, 1), 0 4px 8px rgba(0,0,0,0.3); transform: translate(-50%, -50%) scale(1.15); animation: none; }
+        .trophy-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: trophyBounce 1s ease infinite;
+        }
+
+        @keyframes trophyBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(-5deg); }
+            75% { transform: translateY(-8px) rotate(5deg); }
+        }
+
+        .celebration-title {
+            font-size: 16px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .celebration-winner {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .celebration-winner.red { color: #dc2626; }
+        .celebration-winner.green { color: #16a34a; }
+
+        .celebration-score {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .celebration-score span {
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .celebration-score .red-text { color: #dc2626; }
+        .celebration-score .green-text { color: #16a34a; }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall 3s ease-in-out infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes borderTurnBlink {
+            0% { box-shadow: 0 0 0 4px rgba(241, 196, 15, 1), 0 4px 8px rgba(0,0,0,0.3); }
+            100% { box-shadow: 0 0 0 2px rgba(241, 196, 15, 0), 0 4px 8px rgba(0,0,0,0.3); }
+        }
+
+        .piece.blinking-border {
+            animation: borderTurnBlink 0.6s infinite alternate;
+        }
+
+        .piece.selected {
+            box-shadow: 0 0 0 4px rgba(241, 196, 15, 1), 0 4px 8px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%) scale(1.15);
+            animation: none;
+        }
 
         /* لوحة اللعبة المتجاوبة */
         #game-wrapper {
-            width: 100%; aspect-ratio: 4 / 5; max-height: 55vh;
+            width: 100%; aspect-ratio: 4 / 5;
             background-color: #ffffff; border-radius: 16px; 
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             position: relative; overflow: hidden;
-            border: 1px solid #f1f5f9; margin-bottom: 15px;
+            flex: 1;
+            min-height: 0;
+            border: 1px solid #f1f5f9;
         }
-
-        /* أزرار التحكم الجديدة */
-        .game-controls {
-            display: flex; gap: 10px; width: 100%; margin-top: auto;
-        }
-        .btn-control {
-            flex: 1; padding: 12px; border-radius: 12px; border: none;
-            font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            font-family: inherit;
-        }
-        .btn-home { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-        .btn-home:hover { background: #e2e8f0; }
-        .btn-end { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-        .btn-end:hover { background: #fee2e2; }
 
         svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         
         .piece { 
-            position: absolute; width: min(10vw, 42px); height: min(10vw, 42px); 
+            position: absolute; width: min(10vw, 45px); height: min(10vw, 45px); 
             border-radius: 50%; z-index: 3; cursor: pointer; 
             transition: top 0.3s ease, left 0.3s ease, transform 0.2s; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
@@ -361,16 +664,19 @@
         .piece.green { background: radial-gradient(circle at 30% 30%, #55efc4, #00b894); border: 2px solid #b2bec3; }
         
         .arrow { 
-            position: absolute; width: min(8vw, 32px); height: min(8vw, 32px); 
+            position: absolute; width: min(8vw, 35px); height: min(8vw, 35px); 
             background-color: #34495e; color: #fff; border-radius: 50%; 
             display: flex; justify-content: center; align-items: center; 
-            font-weight: bold; font-size: min(4vw, 16px); cursor: pointer; z-index: 4; 
-            transform: translate(-50%, -50%); box-shadow: 0 3px 6px rgba(0,0,0,0.3); transition: 0.2s;
+            font-weight: bold; font-size: min(4vw, 18px); cursor: pointer; z-index: 4; 
+            transform: translate(-50%, -50%);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3); transition: 0.2s;
         }
         .arrow:hover, .arrow:active { background-color: #f39c12; transform: translate(-50%, -50%) scale(1.1); }
     </style>
 </head>
 <body>
+
+    <h1>لعبة تبديل الأماكن</h1>
 
     <div id="login-screen">
         <div class="login-logo">🎲</div>
@@ -480,19 +786,14 @@
 
         <div id="game-wrapper">
             <svg>
-                <line x1="14%" y1="11%" x2="86%" y2="11%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
-                <line x1="14%" y1="37%" x2="86%" y2="37%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
-                <line x1="14%" y1="63%" x2="86%" y2="63%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
-                <line x1="14%" y1="89%" x2="86%" y2="89%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
-                <line x1="14%" y1="11%" x2="14%" y2="89%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
-                <line x1="50%" y1="11%" x2="50%" y2="89%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
-                <line x1="86%" y1="11%" x2="86%" y2="89%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+                <line x1="14%" y1="11%" x2="86%" y2="11%" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="14%" y1="37%" x2="86%" y2="37%" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="14%" y1="63%" x2="86%" y2="63%" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="14%" y1="89%" x2="86%" y2="89%" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="14%" y1="11%" x2="14%" y2="89%" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="50%" y1="11%" x2="50%" y2="89%" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="86%" y1="11%" x2="86%" y2="89%" stroke="#333" stroke-width="6" stroke-linecap="round"/>
             </svg>
-        </div>
-
-        <div class="game-controls">
-            <button class="btn-control btn-home" onclick="returnToHome()">🏠 الرئيسية</button>
-            <button class="btn-control btn-end" onclick="declareFinalWinner()">🏆 إنهاء اللعبة</button>
         </div>
     </div>
 
@@ -500,12 +801,12 @@
         <div id="celebration-card" class="celebration-card">
             <div id="confetti-container"></div>
             <div class="trophy-icon">🏆</div>
-            <div class="celebration-title" id="celebration-title">انتهت الجولة!</div>
+            <div class="celebration-title">انتهت الجولة!</div>
             <div id="winner-name" class="celebration-winner">اللاعب</div>
             <div id="winner-score" class="celebration-score">
                 <span class="red-text">0</span> - <span class="green-text">0</span>
             </div>
-            <button id="celebration-btn" class="btn btn-primary" onclick="closeCelebration()" style="max-width: 200px; margin: 0 auto;">
+            <button class="btn btn-primary" onclick="closeCelebration()" style="max-width: 200px; margin: 0 auto;">
                 جولة جديدة 🔄
             </button>
         </div>
@@ -518,18 +819,28 @@
         let isGameStarted = false;
         let isOfflineMode = false;
         
+        // كائن لتخزين أسماء اللاعبين الحقيقية
         let playerNames = { red: '---', green: 'في الانتظار...' };
 
+        // WebRTC & Mic Variables
         let localStream;
         let peerConnection;
         let isMicMuted = false;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
         const nodes = [
-            { id: 0, x: 14, y: 11, edges: [1, 3] }, { id: 1, x: 50, y: 11, edges: [0, 2, 4] }, { id: 2, x: 86, y: 11, edges: [1, 5] },
-            { id: 3, x: 14, y: 37, edges: [0, 4, 6] }, { id: 4, x: 50, y: 37, edges: [1, 3, 5, 7] }, { id: 5, x: 86, y: 37, edges: [2, 4, 8] },
-            { id: 6, x: 14, y: 63, edges: [3, 7, 9] }, { id: 7, x: 50, y: 63, edges: [4, 6, 8, 10] }, { id: 8, x: 86, y: 63, edges: [5, 7, 11] },
-            { id: 9, x: 14, y: 89, edges: [6, 10] }, { id: 10, x: 50, y: 89, edges: [7, 9, 11] }, { id: 11, x: 86, y: 89, edges: [8, 10] }
+            { id: 0, x: 14, y: 11, edges: [1, 3] },
+            { id: 1, x: 50, y: 11, edges: [0, 2, 4] },
+            { id: 2, x: 86, y: 11, edges: [1, 5] },
+            { id: 3, x: 14, y: 37, edges: [0, 4, 6] },
+            { id: 4, x: 50, y: 37, edges: [1, 3, 5, 7] },
+            { id: 5, x: 86, y: 37, edges: [2, 4, 8] },
+            { id: 6, x: 14, y: 63, edges: [3, 7, 9] },
+            { id: 7, x: 50, y: 63, edges: [4, 6, 8, 10] },
+            { id: 8, x: 86, y: 63, edges: [5, 7, 11] },
+            { id: 9, x: 14, y: 89, edges: [6, 10] },
+            { id: 10, x: 50, y: 89, edges: [7, 9, 11] },
+            { id: 11, x: 86, y: 89, edges: [8, 10] }
         ];
 
         let pieces = [];
@@ -538,8 +849,10 @@
         let isGameOver = false;
         let currentRound = 1;
         let redWins = 0; let greenWins = 0;
-        let roundFirstPlayer = null; 
+        let roundFirstPlayer = null; // اللاعب الذي يبدأ في كل جولة
 
+        // --- أزرار التحكم --- //
+        
         function toggleOfflineMode() {
             const loginScreen = document.getElementById('login-screen');
             const offlineLogin = document.getElementById('offline-login');
@@ -556,8 +869,11 @@
             const name1 = document.getElementById('offlineName1').value.trim() || 'اللاعب الأحمر';
             const name2 = document.getElementById('offlineName2').value.trim() || 'اللاعب الأخضر';
             
-            isOfflineMode = true; isGameStarted = true; myColor = 'red';
-            playerNames.red = name1; playerNames.green = name2;
+            isOfflineMode = true;
+            isGameStarted = true;
+            myColor = 'red';
+            playerNames.red = name1;
+            playerNames.green = name2;
             
             document.getElementById('red-name').innerText = name1;
             document.getElementById('green-name').innerText = name2;
@@ -566,51 +882,21 @@
             document.getElementById('offline-login').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             
+            // اختيار عشوائي لمن يبدأ في الجولة الأولى
             roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
             currentPlayer = roundFirstPlayer;
             
-            initGame(); updateStatusUI();
+            initGame();
+            updateStatusUI();
         }
 
-        function returnToHome() { location.reload(); }
-
-        // دالة احتفال النهاية المضافة حديثاً
-        function declareFinalWinner() {
-            if (!isGameStarted) return;
-            isGameOver = true;
-            let winnerName = "";
-            let winnerColor = "";
-            let title = "نهاية اللعبة!";
-            
-            if (redWins > greenWins) { winnerName = playerNames.red; winnerColor = 'red'; } 
-            else if (greenWins > redWins) { winnerName = playerNames.green; winnerColor = 'green'; } 
-            else { winnerName = "تعادل!"; winnerColor = 'neutral'; }
-
-            const overlay = document.getElementById('celebration');
-            const card = document.getElementById('celebration-card');
-            const nameEl = document.getElementById('winner-name');
-            const scoreEl = document.getElementById('winner-score');
-            const titleEl = document.getElementById('celebration-title');
-            
-            titleEl.textContent = title;
-            card.className = `celebration-card ${winnerColor}-win`;
-            nameEl.textContent = winnerName;
-            nameEl.className = `celebration-winner ${winnerColor}`;
-            scoreEl.innerHTML = `<span class="red-text">${redWins}</span> - <span class="green-text">${greenWins}</span>`;
-            
-            document.getElementById('newRoundBtn').style.display = 'none';
-            
-            const actionBtn = document.getElementById('celebration-btn');
-            actionBtn.textContent = "العودة للرئيسية 🏠";
-            actionBtn.onclick = returnToHome;
-
-            createConfetti();
-            overlay.classList.add('show');
-            
-            if(!isOfflineMode && socket) { socket.emit('endGameFinal', currentRoom); }
+        function exitGame() {
+            if(confirm("هل أنت متأكد أنك تريد مغادرة اللعبة؟")) {
+                isOfflineMode = false;
+                isGameStarted = false;
+                location.reload(); 
+            }
         }
-
-        socket.on('endGameFinal', () => { declareFinalWinner(); });
 
         function toggleMic() {
             if(localStream) {
@@ -623,6 +909,8 @@
                 }
             }
         }
+
+        // --- الاتصال وبدء اللعبة --- //
 
         function showGameScreen() {
             document.getElementById('login-screen').style.display = 'none';
@@ -637,9 +925,14 @@
 
         async function createRoom() {
             const name = document.getElementById('playerName').value.trim();
-            if(!name) { document.getElementById('error-msg').textContent = 'الرجاء إدخال اسمك'; return; }
+            if(!name) {
+                document.getElementById('error-msg').textContent = 'الرجاء إدخال اسمك';
+                return;
+            }
             const btn = document.querySelector('.btn-primary');
-            btn.disabled = true; btn.querySelector('.btn-text').style.display = 'none'; btn.querySelector('.loading-spinner').style.display = 'block';
+            btn.disabled = true;
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.loading-spinner').style.display = 'block';
             document.getElementById('error-msg').textContent = '';
             await setupVoice();
             socket.emit('createRoom', name);
@@ -648,73 +941,109 @@
         function joinRoom() {
             const name = document.getElementById('playerName').value.trim();
             const room = document.getElementById('roomCodeInput').value.trim();
-            if(!name) { document.getElementById('error-msg').textContent = 'الرجاء إدخال اسمك'; return; }
-            if(!room) { document.getElementById('error-msg').textContent = 'الرجاء إدخال رقم الغرفة'; return; }
+            if(!name) {
+                document.getElementById('error-msg').textContent = 'الرجاء إدخال اسمك';
+                return;
+            }
+            if(!room) {
+                document.getElementById('error-msg').textContent = 'الرجاء إدخال رقم الغرفة';
+                return;
+            }
             const btn = document.querySelector('.btn-secondary');
-            btn.disabled = true; btn.querySelector('.btn-text').style.display = 'none'; btn.querySelector('.loading-spinner').style.display = 'block';
+            btn.disabled = true;
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.loading-spinner').style.display = 'block';
             document.getElementById('error-msg').textContent = '';
             socket.emit('joinRoom', { playerName: name, roomCode: room });
         }
 
+        // عند إنشاء الغرفة (اللاعب الأول) يتم تحديث اسمه فوراً في الشاشة
         socket.on('roomCreated', (data) => {
-            myColor = data.color; currentRoom = data.roomCode; 
+            myColor = data.color; 
+            currentRoom = data.roomCode; 
             playerNames.red = document.getElementById('playerName').value.trim();
             document.getElementById('red-name').innerText = playerNames.red;
             showGameScreen();
         });
 
+        // عند انضمام اللاعب الثاني، يتم حفظ اسمه مؤقتاً حتى تتم المزامنة
         socket.on('roomJoined', async (data) => {
-            myColor = data.color; currentRoom = data.roomCode; 
+            myColor = data.color; 
+            currentRoom = data.roomCode; 
             playerNames.green = document.getElementById('playerName').value.trim();
             showGameScreen();
             await setupVoice();
         });
 
-        socket.on('errorMsg', (msg) => { document.getElementById('error-msg').textContent = msg; resetButtons(); });
+        socket.on('errorMsg', (msg) => {
+            document.getElementById('error-msg').textContent = msg;
+            resetButtons();
+        });
 
         function resetButtons() {
             const primaryBtn = document.querySelector('.btn-primary');
             const secondaryBtn = document.querySelector('.btn-secondary');
-            primaryBtn.disabled = false; primaryBtn.querySelector('.btn-text').style.display = 'inline'; primaryBtn.querySelector('.loading-spinner').style.display = 'none';
-            secondaryBtn.disabled = false; secondaryBtn.querySelector('.btn-text').style.display = 'inline'; secondaryBtn.querySelector('.loading-spinner').style.display = 'none';
+            primaryBtn.disabled = false;
+            primaryBtn.querySelector('.btn-text').style.display = 'inline';
+            primaryBtn.querySelector('.loading-spinner').style.display = 'none';
+            secondaryBtn.disabled = false;
+            secondaryBtn.querySelector('.btn-text').style.display = 'inline';
+            secondaryBtn.querySelector('.loading-spinner').style.display = 'none';
         }
 
         socket.on('playerDisconnected', () => {
-            isGameStarted = false; isGameOver = true;
+            isGameStarted = false;
+            isGameOver = true;
             const statusEl = document.getElementById('status');
-            statusEl.textContent = 'اللاعب الآخر غادر اللعبة!'; statusEl.className = 'win-msg';
+            statusEl.textContent = 'اللاعب الآخر غادر اللعبة!';
+            statusEl.className = 'win-msg';
             document.querySelectorAll('.piece').forEach(el => el.remove());
             document.querySelectorAll('.arrow').forEach(el => el.remove());
         });
 
+        // --- WebRTC (الصوت) --- //
+        
         async function setupVoice() {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 const micBtn = document.getElementById('mic-btn');
                 if (micBtn) micBtn.style.display = 'block';
+                
                 peerConnection = new RTCPeerConnection(configuration);
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
                 peerConnection.ontrack = event => { document.getElementById('remoteAudio').srcObject = event.streams[0]; };
-                peerConnection.onicecandidate = event => { if (event.candidate) socket.emit('ice-candidate', { room: currentRoom, candidate: event.candidate }); };
-            } catch (err) { console.error("لم نتمكن من الوصول للميكروفون:", err); }
+                peerConnection.onicecandidate = event => {
+                    if (event.candidate) socket.emit('ice-candidate', { room: currentRoom, candidate: event.candidate });
+                };
+            } catch (err) {
+                console.error("لم نتمكن من الوصول للميكروفون:", err);
+            }
         }
+
+        // --- منطق اللعبة الأساسي --- //
 
         socket.on('gameStart', async (players) => {
             isGameStarted = true;
+            
+            // مزامنة الأسماء بين اللاعبين ليعرف كل لاعب اسم خصمه
             const pRed = players.find(p => p.color === 'red');
             const pGreen = players.find(p => p.color === 'green');
             if(pRed) playerNames.red = pRed.name;
             if(pGreen) playerNames.green = pGreen.name;
+            
             document.getElementById('red-name').innerText = playerNames.red;
             document.getElementById('green-name').innerText = playerNames.green;
 
+            // اللاعب الأحمر (المنشئ) يختار من يبدأ عشوائياً ويرسل النتيجة
             if (myColor === 'red') {
                 roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
                 socket.emit('setFirstPlayer', { room: currentRoom, firstPlayer: roundFirstPlayer });
             }
             
             currentPlayer = roundFirstPlayer || 'red';
-            initGame(); updateStatusUI();
+            initGame();
+            updateStatusUI();
             
             if (myColor === 'red' && peerConnection) {
                 const offer = await peerConnection.createOffer();
@@ -740,7 +1069,10 @@
             ];
         }
 
-        function initGame() { setupPieces(); drawPieces(); updateBlinkingBorder(); }
+        function initGame() {
+            setupPieces(); drawPieces();
+            updateBlinkingBorder();
+        }
 
         function drawPieces() {
             document.querySelectorAll('.piece').forEach(el => el.remove());
@@ -768,20 +1100,28 @@
             pieces.forEach(p => {
                 const pieceEl = document.getElementById(p.id);
                 if (pieceEl) {
-                    if (isGameOver || selectedPiece !== null) { pieceEl.classList.remove('blinking-border'); } 
-                    else if (p.player === currentPlayer) { pieceEl.classList.add('blinking-border'); } 
-                    else { pieceEl.classList.remove('blinking-border'); }
+                    if (isGameOver || selectedPiece !== null) {
+                        pieceEl.classList.remove('blinking-border');
+                    } else if (p.player === currentPlayer) {
+                        pieceEl.classList.add('blinking-border');
+                    } else {
+                        pieceEl.classList.remove('blinking-border');
+                    }
                 }
             });
         }
 
         function handlePieceClick(piece) {
             if (!isGameStarted || isGameOver || piece.player !== currentPlayer) return;
-            if (!isOfflineMode && currentPlayer !== myColor) return;
-            
+            if (isOfflineMode) {
+                // في وضع الأوفلاين، أي لاعب يمكنه اللعب في دوره
+            } else if (currentPlayer !== myColor) {
+                return;
+            }
             if (selectedPiece && selectedPiece.id === piece.id) { selectedPiece = null; clearArrows(); } 
             else { selectedPiece = piece; showArrows(piece); }
-            updatePiecesPosition(); updateBlinkingBorder();
+            updatePiecesPosition();
+            updateBlinkingBorder();
         }
 
         function clearArrows() { document.querySelectorAll('.arrow').forEach(a => a.remove()); }
@@ -795,60 +1135,86 @@
         }
 
         function createArrow(fromNode, toNode) {
-            const arrowEl = document.createElement('div'); arrowEl.className = 'arrow'; let symbol = '';
-            let leftStyle = `${fromNode.x}%`; let topStyle = `${fromNode.y}%`; const offset = 35; 
+            const arrowEl = document.createElement('div');
+            arrowEl.className = 'arrow';
+            let symbol = '';
+            
+            let leftStyle = `${fromNode.x}%`;
+            let topStyle = `${fromNode.y}%`;
+            const offset = 40; 
             
             if (toNode.y < fromNode.y) { symbol = '↑'; topStyle = `calc(${fromNode.y}% - ${offset}px)`; }
             else if (toNode.y > fromNode.y) { symbol = '↓'; topStyle = `calc(${fromNode.y}% + ${offset}px)`; }
             else if (toNode.x < fromNode.x) { symbol = '←'; leftStyle = `calc(${fromNode.x}% - ${offset}px)`; }
             else if (toNode.x > fromNode.x) { symbol = '→'; leftStyle = `calc(${fromNode.x}% + ${offset}px)`; }
 
-            arrowEl.innerHTML = symbol; arrowEl.style.left = leftStyle; arrowEl.style.top = topStyle;
+            arrowEl.innerHTML = symbol;
+            arrowEl.style.left = leftStyle; arrowEl.style.top = topStyle;
             
             arrowEl.onclick = () => {
-                if (isOfflineMode) { executeMove(selectedPiece.id, toNode.id); } 
-                else {
+                if (isOfflineMode) {
+                    executeMove(selectedPiece.id, toNode.id);
+                } else {
                     const data = { room: currentRoom, pieceId: selectedPiece.id, targetId: toNode.id };
-                    socket.emit('move', data); executeMove(data.pieceId, data.targetId);
+                    socket.emit('move', data);
+                    executeMove(data.pieceId, data.targetId);
                 }
             };
             document.getElementById('game-wrapper').appendChild(arrowEl);
         }
 
         socket.on('move', (data) => { executeMove(data.pieceId, data.targetId); });
-        socket.on('setFirstPlayer', (data) => { roundFirstPlayer = data.firstPlayer; currentPlayer = roundFirstPlayer; updateStatusUI(); });
+
+        socket.on('setFirstPlayer', (data) => {
+            roundFirstPlayer = data.firstPlayer;
+            currentPlayer = roundFirstPlayer;
+            updateStatusUI();
+        });
 
         function executeMove(pieceId, targetNodeId) {
             const p = pieces.find(p => p.id === pieceId);
-            p.nodeId = targetNodeId; selectedPiece = null; clearArrows(); updatePiecesPosition();
+            p.nodeId = targetNodeId;
+            selectedPiece = null;
+            clearArrows();
+            updatePiecesPosition();
             if (!checkWin()) switchTurn();
         }
 
-        function switchTurn() { currentPlayer = currentPlayer === 'red' ? 'green' : 'red'; updateStatusUI(); updateBlinkingBorder(); }
+        function switchTurn() {
+            currentPlayer = currentPlayer === 'red' ? 'green' : 'red';
+            updateStatusUI();
+            updateBlinkingBorder();
+        }
 
+        // دالة عرض الدور بالاسم الفعلي
         function updateStatusUI() {
             const statusEl = document.getElementById('status');
             const playerName = currentPlayer === 'red' ? playerNames.red : playerNames.green;
             const icon = currentPlayer === 'red' ? '🔴' : '🟢';
             statusEl.innerHTML = `${icon} دور: ${playerName}`;
             statusEl.className = currentPlayer === 'red' ? 'turn-red' : 'turn-green';
+            
             document.getElementById('red-card').classList.toggle('active', currentPlayer === 'red');
             document.getElementById('green-card').classList.toggle('active', currentPlayer === 'green');
+            
             updateBlinkingBorder();
         }
 
+        // دالة الفوز تعرض اسم الفائز الفعلي
         function checkWin() {
             const redWin = [9, 10, 11].every(id => pieces.filter(p => p.player === 'red').map(p => p.nodeId).includes(id));
             const greenWin = [0, 1, 2].every(id => pieces.filter(p => p.player === 'green').map(p => p.nodeId).includes(id));
 
             if (redWin) {
-                redWins++; document.getElementById('red-score').textContent = redWins;
-                endGame(`🏆 الفائز في هذه الجولة هو ${playerNames.red}!`, 'turn-red');
+                redWins++; 
+                document.getElementById('red-score').textContent = redWins;
+                endGame(`🏆 الفائز هو ${playerNames.red}!`, 'turn-red');
                 setTimeout(() => showCelebration(playerNames.red, 'red', { red: redWins, green: greenWins }), 300);
                 return true;
             } else if (greenWin) {
-                greenWins++; document.getElementById('green-score').textContent = greenWins;
-                endGame(`🏆 الفائز في هذه الجولة هو ${playerNames.green}!`, 'turn-green');
+                greenWins++; 
+                document.getElementById('green-score').textContent = greenWins;
+                endGame(`🏆 الفائز هو ${playerNames.green}!`, 'turn-green');
                 setTimeout(() => showCelebration(playerNames.green, 'green', { red: redWins, green: greenWins }), 300);
                 return true;
             }
@@ -856,15 +1222,20 @@
         }
 
         function endGame(msg, className) {
-            isGameOver = true; const statusEl = document.getElementById('status');
-            statusEl.innerHTML = msg; statusEl.className = className;
+            isGameOver = true;
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = msg;
+            statusEl.className = className;
             document.getElementById('newRoundBtn').style.display = 'block';
-            document.getElementById('red-card').classList.remove('active'); document.getElementById('green-card').classList.remove('active');
+            document.getElementById('red-card').classList.remove('active');
+            document.getElementById('green-card').classList.remove('active');
             updateBlinkingBorder();
         }
 
         function requestNewRound() {
-            if (!isOfflineMode) { socket.emit('newRound', currentRoom); }
+            if (!isOfflineMode) {
+                socket.emit('newRound', currentRoom);
+            }
             startNewRoundLocal();
         }
 
@@ -875,29 +1246,30 @@
             const card = document.getElementById('celebration-card');
             const nameEl = document.getElementById('winner-name');
             const scoreEl = document.getElementById('winner-score');
-            const titleEl = document.getElementById('celebration-title');
             
-            titleEl.textContent = "انتهت الجولة!";
             card.className = `celebration-card ${winnerColor}-win`;
             nameEl.textContent = winnerName;
             nameEl.className = `celebration-winner ${winnerColor}`;
             scoreEl.innerHTML = `<span class="red-text">${score.red}</span> - <span class="green-text">${score.green}</span>`;
             
-            const actionBtn = document.getElementById('celebration-btn');
-            actionBtn.textContent = "جولة جديدة 🔄";
-            actionBtn.onclick = closeCelebration;
-
-            createConfetti(); overlay.classList.add('show');
+            createConfetti();
+            overlay.classList.add('show');
         }
 
         function createConfetti() {
-            const container = document.getElementById('confetti-container'); container.innerHTML = '';
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
             const colors = ['#ef4444', '#22c55e', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899'];
+            
             for (let i = 0; i < 30; i++) {
-                const confetti = document.createElement('div'); confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%'; confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDelay = Math.random() * 2 + 's'; confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                confetti.style.width = (Math.random() * 8 + 6) + 'px'; confetti.style.height = (Math.random() * 8 + 6) + 'px';
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confetti.style.width = (Math.random() * 8 + 6) + 'px';
+                confetti.style.height = (Math.random() * 8 + 6) + 'px';
                 container.appendChild(confetti);
             }
         }
@@ -905,15 +1277,25 @@
         function closeCelebration() {
             document.getElementById('celebration').classList.remove('show');
             document.getElementById('newRoundBtn').style.display = 'none';
-            if (!isOfflineMode) { socket.emit('newRound', currentRoom); }
+            if (!isOfflineMode) {
+                socket.emit('newRound', currentRoom);
+            }
             startNewRoundLocal();
         }
 
         function startNewRoundLocal() {
-            currentRound++; document.getElementById('round-counter').textContent = currentRound;
+            currentRound++;
+            document.getElementById('round-counter').textContent = currentRound;
             document.getElementById('newRoundBtn').style.display = 'none';
-            currentPlayer = roundFirstPlayer === 'red' ? 'green' : 'red'; roundFirstPlayer = currentPlayer;
-            isGameOver = false; selectedPiece = null; updateStatusUI(); initGame();
+            
+            // تبديل الدور: من بدأ الجولة السابقة ينتهي دوره
+            currentPlayer = roundFirstPlayer === 'red' ? 'green' : 'red';
+            roundFirstPlayer = currentPlayer;
+            
+            isGameOver = false;
+            selectedPiece = null;
+            updateStatusUI();
+            initGame();
         }
     </script>
 </body>
