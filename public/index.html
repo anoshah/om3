@@ -595,7 +595,7 @@
             
             const homeBtn = document.querySelector('.btn-home');
             homeBtn.innerHTML = '🔄 إعادة الجولة';
-            homeBtn.onclick = function() { requestNewRound(); };
+            homeBtn.onclick = function() { restartRoundLocal(); };
             
             roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
             currentPlayer = roundFirstPlayer;
@@ -957,6 +957,12 @@
 
         function startNewRoundLocal() {
             currentRound++; document.getElementById('round-counter').textContent = currentRound;
+            document.getElementById('newRoundBtn').style.display = 'none';
+            currentPlayer = roundFirstPlayer === 'red' ? 'green' : 'red'; roundFirstPlayer = currentPlayer;
+            isGameOver = false; selectedPiece = null; updateStatusUI(); initGame();
+        }
+
+        function restartRoundLocal() {
             document.getElementById('newRoundBtn').style.display = 'none';
             currentPlayer = roundFirstPlayer === 'red' ? 'green' : 'red'; roundFirstPlayer = currentPlayer;
             isGameOver = false; selectedPiece = null; updateStatusUI(); initGame();
