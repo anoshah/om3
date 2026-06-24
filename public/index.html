@@ -236,6 +236,16 @@
             to { transform: rotate(360deg); }
         }
 
+        .btn-offline {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-offline:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        }
+
         /* شاشة اللعبة */
         #game-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 500px; }
         
@@ -369,6 +379,38 @@
         </button>
 
         <div id="error-msg" class="error"></div>
+
+        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="toggleOfflineMode()" style="background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; font-size:13px; font-family:inherit; transition: color 0.3s;" onmouseover="this.style.color='#f59e0b'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+                🎮 أو العب بدون إنترنت
+            </button>
+        </div>
+    </div>
+
+    <div id="offline-login" style="display:none; position:relative; z-index:1;">
+        <div class="login-logo">🎮</div>
+        <div class="login-title">العب أوفلاين</div>
+        <div class="login-subtitle">العب مع صديقك على نفس الجهاز</div>
+
+        <div class="input-group">
+            <label>اسم اللاعب الأحمر</label>
+            <div class="input-wrapper">
+                <input type="text" id="offlineName1" placeholder="اللاعب الأول...">
+                <span class="input-icon">🔴</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>اسم اللاعب الأخضر</label>
+            <div class="input-wrapper">
+                <input type="text" id="offlineName2" placeholder="اللاعب الثاني...">
+                <span class="input-icon">🟢</span>
+            </div>
+        </div>
+
+        <button class="btn btn-offline" onclick="startOfflineGame()">
+            ابدأ اللعبة 🔥
+        </button>
     </div>
 
     <div id="game-screen">
@@ -417,6 +459,7 @@
         let myColor = null;
         let currentRoom = null;
         let isGameStarted = false;
+        let isOfflineMode = false;
         
         // كائن لتخزين أسماء اللاعبين الحقيقية
         let playerNames = { red: '---', green: 'في الانتظار...' };
@@ -451,8 +494,46 @@
 
         // --- أزرار التحكم --- //
         
+        function toggleOfflineMode() {
+            const loginScreen = document.getElementById('login-screen');
+            const offlineLogin = document.getElementById('offline-login');
+            if (loginScreen.style.display === 'none') {
+                loginScreen.style.display = 'block';
+                offlineLogin.style.display = 'none';
+            } else {
+                loginScreen.style.display = 'none';
+                offlineLogin.style.display = 'block';
+            }
+        }
+
+        function startOfflineGame() {
+            const name1 = document.getElementById('offlineName1').value.trim() || 'اللاعب الأحمر';
+            const name2 = document.getElementById('offlineName2').value.trim() || 'اللاعب الأخضر';
+            
+            isOfflineMode = true;
+            isGameStarted = true;
+            myColor = 'red';
+            playerNames.red = name1;
+            playerNames.green = name2;
+            
+            document.getElementById('red-name').innerText = name1;
+            document.getElementById('green-name').innerText = name2;
+            
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('offline-login').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            document.getElementById('displayRoomCode').innerText = 'أوفلاين';
+            document.querySelector('.room-badge').style.display = 'none';
+            document.getElementById('mic-btn').style.display = 'none';
+            
+            initGame();
+            updateStatusUI();
+        }
+
         function exitGame() {
             if(confirm("هل أنت متأكد أنك تريد مغادرة اللعبة؟")) {
+                isOfflineMode = false;
+                isGameStarted = false;
                 location.reload(); 
             }
         }
@@ -644,7 +725,7 @@
             pieces.forEach(p => {
                 const pieceEl = document.getElementById(p.id);
                 if (pieceEl) {
-                    if (isGameOver || selectedPiece !== null || currentPlayer !== myColor) {
+                    if (isGameOver || selectedPiece !== null) {
                         pieceEl.classList.remove('blinking-border');
                     } else if (p.player === currentPlayer) {
                         pieceEl.classList.add('blinking-border');
@@ -656,7 +737,12 @@
         }
 
         function handlePieceClick(piece) {
-            if (!isGameStarted || isGameOver || currentPlayer !== myColor || piece.player !== myColor) return;
+            if (!isGameStarted || isGameOver || piece.player !== currentPlayer) return;
+            if (isOfflineMode) {
+                // في وضع الأوفلاين، أي لاعب يمكنه اللعب في دوره
+            } else if (currentPlayer !== myColor) {
+                return;
+            }
             if (selectedPiece && selectedPiece.id === piece.id) { selectedPiece = null; clearArrows(); } 
             else { selectedPiece = piece; showArrows(piece); }
             updatePiecesPosition();
@@ -691,9 +777,13 @@
             arrowEl.style.left = leftStyle; arrowEl.style.top = topStyle;
             
             arrowEl.onclick = () => {
-                const data = { room: currentRoom, pieceId: selectedPiece.id, targetId: toNode.id };
-                socket.emit('move', data);
-                executeMove(data.pieceId, data.targetId);
+                if (isOfflineMode) {
+                    executeMove(selectedPiece.id, toNode.id);
+                } else {
+                    const data = { room: currentRoom, pieceId: selectedPiece.id, targetId: toNode.id };
+                    socket.emit('move', data);
+                    executeMove(data.pieceId, data.targetId);
+                }
             };
             document.getElementById('game-wrapper').appendChild(arrowEl);
         }
@@ -749,7 +839,9 @@
         }
 
         function requestNewRound() {
-            socket.emit('newRound', currentRoom);
+            if (!isOfflineMode) {
+                socket.emit('newRound', currentRoom);
+            }
             startNewRoundLocal();
         }
 
