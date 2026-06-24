@@ -530,12 +530,12 @@
 
         <div class="game-info-bar" id="game-info-bar" style="display:none;">
             <button class="btn-info btn-room-info" id="room-btn" onclick="copyRoomCode()">رقم الغرفة: <span id="room-btn-code">---</span></button>
-            <button class="btn-info btn-mic-info" id="mic-btn" onclick="toggleMic()">🔇 ميك مغلق</button>
+            <button class="btn-info btn-mic-info" id="mic-btn" onclick="toggleMic()">🔇 مايك مغلق</button>
         </div>
 
         <div class="game-controls">
             <button class="btn-control btn-home" onclick="returnToHome()">🏠 الرئيسية</button>
-            <button class="btn-control btn-end" onclick="declareFinalWinner()">🏆 إنهاء اللعبة</button>
+            <button class="btn-control btn-end" onclick="confirmEndGame()">🏆 إنهاء اللعبة</button>
         </div>
     </div>
 
@@ -611,7 +611,7 @@
             
             const homeBtn = document.querySelector('.btn-home');
             homeBtn.innerHTML = '🔄 إعادة الجولة';
-            homeBtn.onclick = function() { restartRoundLocal(); };
+            homeBtn.onclick = function() { confirmNewRound(); };
             
             roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
             currentPlayer = roundFirstPlayer;
@@ -628,6 +628,18 @@
                 }).catch(() => {
                     alert('كود الغرفة: ' + currentRoom);
                 });
+            }
+        }
+
+        function confirmNewRound() {
+            if (confirm('هل تريد بدء جولة جديدة؟')) {
+                requestNewRound();
+            }
+        }
+
+        function confirmEndGame() {
+            if (confirm('هل تريد إنهاء اللعبة؟ سيتم تحديد الفائز النهائي.')) {
+                declareFinalWinner();
             }
         }
 
@@ -675,7 +687,7 @@
                 localStream.getAudioTracks()[0].enabled = !isMicMuted;
                 const micBtn = document.getElementById('mic-btn');
                 if (micBtn) {
-                    micBtn.innerHTML = isMicMuted ? '🔇 ميك مغلق' : '🎤 ميك مفتوح';
+                    micBtn.innerHTML = isMicMuted ? '🔇 مايك مغلق' : '🎤 مايك مفتوح';
                     micBtn.className = isMicMuted ? 'btn-info btn-mic-info muted' : 'btn-info btn-mic-info';
                 }
             } else {
@@ -697,7 +709,7 @@
                 document.getElementById('room-btn-code').innerText = currentRoom;
                 const micBtn = document.getElementById('mic-btn');
                 if (micBtn) {
-                    micBtn.innerHTML = '🔇 ميك مغلق';
+                    micBtn.innerHTML = '🔇 مايك مغلق';
                     micBtn.className = 'btn-info btn-mic-info muted';
                 }
                 
@@ -721,6 +733,9 @@
             if (currentRoom && !isOfflineMode) {
                 document.getElementById('game-info-bar').style.display = 'flex';
                 document.getElementById('room-btn-code').innerText = currentRoom;
+                const homeBtn = document.querySelector('.btn-home');
+                homeBtn.innerHTML = '🔄 إعادة الجولة';
+                homeBtn.onclick = function() { confirmNewRound(); };
             } else {
                 document.getElementById('game-info-bar').style.display = 'none';
             }
