@@ -7,16 +7,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// تحديد مجلد الملفات الثابتة (الواجهة)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// تخزين بيانات الغرف
 const rooms = {};
 
 io.on('connection', (socket) => {
     console.log('مستخدم متصل:', socket.id);
 
-    // 1. إنشاء غرفة جديدة (3 أرقام)
     socket.on('createRoom', (playerName) => {
         const roomCode = Math.floor(100 + Math.random() * 900).toString();
         rooms[roomCode] = {
@@ -26,7 +23,6 @@ io.on('connection', (socket) => {
         socket.emit('roomCreated', { roomCode, color: 'red' });
     });
 
-    // 2. الانضمام لغرفة
     socket.on('joinRoom', ({ playerName, roomCode }) => {
         const room = rooms[roomCode];
         if (room && room.players.length === 1) {
@@ -34,37 +30,26 @@ io.on('connection', (socket) => {
             socket.join(roomCode);
             socket.emit('roomJoined', { roomCode, color: 'green' });
             
-            // إبلاغ اللاعبين ببدء اللعبة
+            // إرسال بيانات اللاعبين (بما فيها الأسماء) للجميع في الغرفة لبدء اللعبة
             io.to(roomCode).emit('gameStart', room.players);
         } else {
             socket.emit('errorMsg', 'رقم الغرفة غير صحيح أو الغرفة ممتلئة.');
         }
     });
 
-    // 3. مزامنة الحركات
     socket.on('move', (data) => {
         socket.to(data.room).emit('move', data);
     });
 
-    // 4. طلب جولة جديدة
     socket.on('newRound', (roomCode) => {
         socket.to(roomCode).emit('newRound');
     });
 
-    // 5. إشارات WebRTC للدردشة الصوتية
-    socket.on('offer', (data) => {
-        socket.to(data.room).emit('offer', data.offer);
-    });
+    // إشارات WebRTC للدردشة الصوتية
+    socket.on('offer', (data) => socket.to(data.room).emit('offer', data.offer));
+    socket.on('answer', (data) => socket.to(data.room).emit('answer', data.answer));
+    socket.on('ice-candidate', (data) => socket.to(data.room).emit('ice-candidate', data.candidate));
 
-    socket.on('answer', (data) => {
-        socket.to(data.room).emit('answer', data.answer);
-    });
-
-    socket.on('ice-candidate', (data) => {
-        socket.to(data.room).emit('ice-candidate', data.candidate);
-    });
-
-    // عند قطع الاتصال
     socket.on('disconnect', () => {
         console.log('مستخدم غادر:', socket.id);
     });

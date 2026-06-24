@@ -2,53 +2,107 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لعبة تبديل الأماكن المباشرة</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #ecf0f1; margin: 0; padding: 20px; }
-        h1 { color: #2c3e50; margin-bottom: 10px; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0; padding: 10px; 
+            display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh;
+        }
+        
+        h1 { color: #2c3e50; font-size: 24px; text-align: center; margin: 10px 0 20px; }
         
         /* شاشة الدخول */
-        #login-screen { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+        #login-screen { 
+            background: white; padding: 25px; border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 100%; max-width: 400px; text-align: center; 
+        }
         .input-group { margin-bottom: 15px; }
-        input { width: 90%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 16px; margin-top: 5px; }
-        .btn { background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; margin-bottom: 10px; }
-        .btn:hover { background-color: #2980b9; }
-        .btn-green { background-color: #2ecc71; }
-        .btn-green:hover { background-color: #27ae60; }
+        input { width: 100%; padding: 12px; border: 2px solid #ecf0f1; border-radius: 10px; font-size: 16px; outline: none; transition: border 0.3s; }
+        input:focus { border-color: #3498db; }
+        .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: opacity 0.2s, transform 0.1s; color: white; }
+        .btn:active { transform: scale(0.98); }
+        .btn-blue { background-color: #3498db; }
+        .btn-green { background-color: #2ecc71; margin-bottom: 15px;}
+        .btn-red { background-color: #e74c3c; }
+        .btn-gray { background-color: #7f8c8d; }
         .error { color: #e74c3c; font-weight: bold; font-size: 14px; margin-top: 10px; }
 
         /* شاشة اللعبة */
-        #game-screen { display: none; flex-direction: column; align-items: center; }
-        .room-info { background-color: #34495e; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 18px; }
+        #game-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 500px; }
         
-        .scoreboard { display: flex; justify-content: space-between; align-items: center; width: 420px; margin-bottom: 20px; background-color: #fff; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .score-box { text-align: center; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 18px; min-width: 80px; }
-        .red-box { background-color: #fadbd8; color: #c0392b; border: 2px solid #e74c3c; }
-        .green-box { background-color: #d5f5e3; color: #27ae60; border: 2px solid #2ecc71; }
-        .score-number { display: block; font-size: 28px; margin-top: 5px; }
-        .center-info { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .round-badge { background-color: #34495e; color: #fff; padding: 5px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; }
-        
-        #status { width: 380px; text-align: center; padding: 10px 20px; font-size: 20px; font-weight: bold; border-radius: 8px; margin-bottom: 20px; }
-        .turn-red { background-color: #fadbd8; color: #c0392b; }
-        .turn-green { background-color: #d5f5e3; color: #27ae60; }
-        
-        #game-board { position: relative; width: 400px; height: 500px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-        svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .piece { position: absolute; width: 40px; height: 40px; border-radius: 50%; z-index: 3; cursor: pointer; transition: top 0.3s ease, left 0.3s ease; box-shadow: 0 3px 6px rgba(0,0,0,0.3); margin-top: -20px; margin-left: -20px; }
-        .piece.red { background-color: #e74c3c; }
-        .piece.green { background-color: #2ecc71; }
-        .piece.selected { box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.9); transform: scale(1.1); }
-        
-        .arrow { position: absolute; width: 30px; height: 30px; background-color: #34495e; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; cursor: pointer; z-index: 4; margin-top: -15px; margin-left: -15px; }
-        .arrow:hover { background-color: #f39c12; }
+        /* شريط الأدوات العلوي */
+        .top-toolbar {
+            display: flex; justify-content: space-between; align-items: center; 
+            width: 100%; background: white; padding: 10px 15px; 
+            border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+        .toolbar-btn {
+            background: none; border: none; font-size: 14px; font-weight: bold; 
+            cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: 0.2s;
+        }
+        .btn-exit { color: #e74c3c; background-color: #fadbd8; }
+        .btn-mic { color: #27ae60; background-color: #d5f5e3; }
+        .btn-mic.muted { color: #e74c3c; background-color: #fadbd8; }
+        .room-badge { background-color: #34495e; color: white; padding: 5px 12px; border-radius: 8px; font-size: 14px; }
 
-        /* أيقونة الصوت */
-        #voice-status { display: flex; align-items: center; gap: 5px; color: #27ae60; font-weight: bold; margin-top: 10px; }
-        .mic-icon { width: 15px; height: 15px; background-color: #27ae60; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); } 100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); } }
+        /* لوحة النتائج */
+        .scoreboard { 
+            display: flex; justify-content: space-between; align-items: center; 
+            width: 100%; margin-bottom: 15px; background-color: #fff; 
+            padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        }
+        .player-card { text-align: center; padding: 10px; border-radius: 10px; flex: 1; margin: 0 5px; }
+        .red-card { background-color: #fadbd8; color: #c0392b; border: 2px solid #e74c3c; }
+        .green-card { background-color: #d5f5e3; color: #27ae60; border: 2px solid #2ecc71; }
+        .player-name { font-size: 14px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; margin: 0 auto; }
+        .score-num { display: block; font-size: 26px; font-weight: bold; margin-top: 5px; }
+        
+        #status { 
+            width: 100%; text-align: center; padding: 12px; font-size: 18px; 
+            font-weight: bold; border-radius: 12px; margin-bottom: 15px; transition: 0.3s; 
+        }
+        .turn-red { background-color: #e74c3c; color: white; box-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+        .turn-green { background-color: #2ecc71; color: white; box-shadow: 0 4px 10px rgba(46,204,113,0.3); }
+
+        /* لوحة اللعبة المتجاوبة */
+        #game-wrapper {
+            width: 100%; aspect-ratio: 4 / 5; /* يحافظ على التناسب 4 عرض إلى 5 طول */
+            background-color: #ffffff; border-radius: 20px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            position: relative; overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        .piece { 
+            position: absolute; width: min(10vw, 45px); height: min(10vw, 45px); 
+            border-radius: 50%; z-index: 3; cursor: pointer; 
+            transition: top 0.3s ease, left 0.3s ease, transform 0.2s; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            transform: translate(-50%, -50%); /* توسيط القطعة بالنسبة للإحداثيات */
+        }
+        .piece.red { background: radial-gradient(circle at 30% 30%, #ff7675, #d63031); border: 2px solid #b2bec3; }
+        .piece.green { background: radial-gradient(circle at 30% 30%, #55efc4, #00b894); border: 2px solid #b2bec3; }
+        .piece.selected { box-shadow: 0 0 0 4px #f1c40f, 0 4px 8px rgba(0,0,0,0.3); transform: translate(-50%, -50%) scale(1.15); z-index: 5;}
+        
+        .arrow { 
+            position: absolute; width: min(8vw, 35px); height: min(8vw, 35px); 
+            background-color: #34495e; color: #fff; border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; 
+            font-weight: bold; font-size: min(4vw, 18px); cursor: pointer; z-index: 4; 
+            transform: translate(-50%, -50%);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3); transition: 0.2s;
+        }
+        .arrow:hover, .arrow:active { background-color: #f39c12; transform: translate(-50%, -50%) scale(1.1); }
     </style>
 </head>
 <body>
@@ -56,48 +110,62 @@
     <h1>لعبة تبديل الأماكن</h1>
 
     <div id="login-screen">
-        <h2>أهلاً بك</h2>
+        <h2 style="color: #34495e; margin-top: 0;">أهلاً بك في اللعبة</h2>
         <div class="input-group">
             <input type="text" id="playerName" placeholder="أدخل اسمك هنا...">
         </div>
-        <button class="btn btn-green" onclick="createRoom()">إنشاء غرفة جديدة</button>
-        <hr>
+        <button class="btn btn-green" onclick="createRoom()">إنشاء غرفة جديدة ➕</button>
+        
+        <div style="margin: 20px 0; color: #7f8c8d; font-size: 14px;">أو انضم لغرفة موجودة</div>
+        
         <div class="input-group">
             <input type="number" id="roomCodeInput" placeholder="أدخل رقم الغرفة (3 أرقام)">
         </div>
-        <button class="btn" onclick="joinRoom()">انضمام للغرفة</button>
+        <button class="btn btn-blue" onclick="joinRoom()">انضمام للغرفة 🎮</button>
         <div id="error-msg" class="error"></div>
     </div>
 
     <div id="game-screen">
-        <div class="room-info">رقم الغرفة: <span id="displayRoomCode">---</span> | لونك: <span id="displayColor">---</span></div>
-        <div id="voice-status" style="display:none;"><div class="mic-icon"></div> الدردشة الصوتية مفعلة</div>
+        <div class="top-toolbar">
+            <button class="toolbar-btn btn-exit" onclick="exitGame()">🚪 خروج</button>
+            <div class="room-badge">غرفة: <span id="displayRoomCode">---</span></div>
+            <button id="mic-btn" class="toolbar-btn btn-mic" onclick="toggleMic()" style="display:none;">🎤 المايك مفتوح</button>
+        </div>
+
         <audio id="remoteAudio" autoplay></audio>
 
         <div class="scoreboard">
-            <div class="score-box red-box">الأحمر <span id="red-score" class="score-number">0</span></div>
-            <div class="center-info">
-                <div id="round-counter" class="round-badge">الجولة: 1</div>
-                <button class="btn" onclick="requestNewRound()" id="newRoundBtn" style="display:none;">جولة جديدة 🔄</button>
+            <div class="player-card red-card">
+                <div id="red-name" class="player-name">اللاعب الأول</div>
+                <span id="red-score" class="score-num">0</span>
             </div>
-            <div class="score-box green-box">الأخضر <span id="green-score" class="score-number">0</span></div>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <div style="font-weight: bold; color: #7f8c8d; font-size: 12px;">الجولة <span id="round-counter">1</span></div>
+                <button class="btn btn-blue" style="padding: 5px 10px; font-size: 12px; display: none;" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة 🔄</button>
+            </div>
+
+            <div class="player-card green-card">
+                <div id="green-name" class="player-name">في الانتظار...</div>
+                <span id="green-score" class="score-num">0</span>
+            </div>
         </div>
 
         <div id="status" class="turn-red">في انتظار انضمام اللاعب الثاني...</div>
 
-        <div id="game-board">
+        <div id="game-wrapper">
             <svg>
-                <line x1="100" y1="100" x2="300" y2="100" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="100" y1="200" x2="300" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="100" y1="300" x2="300" y2="300" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="100" y1="400" x2="300" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="100" y1="100" x2="100" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="200" y1="100" x2="200" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="300" y1="100" x2="300" y2="200" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="200" y1="200" x2="200" y2="300" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="100" y1="300" x2="100" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="200" y1="300" x2="200" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
-                <line x1="300" y1="300" x2="300" y2="400" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+                <line x1="25%" y1="20%" x2="75%" y2="20%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="25%" y1="40%" x2="75%" y2="40%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="25%" y1="60%" x2="75%" y2="60%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="25%" y1="80%" x2="75%" y2="80%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="25%" y1="20%" x2="25%" y2="40%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="50%" y1="20%" x2="50%" y2="40%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="75%" y1="20%" x2="75%" y2="40%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="50%" y1="40%" x2="50%" y2="60%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="25%" y1="60%" x2="25%" y2="80%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="50%" y1="60%" x2="50%" y2="80%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
+                <line x1="75%" y1="60%" x2="75%" y2="80%" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/>
             </svg>
         </div>
     </div>
@@ -107,19 +175,23 @@
         let myColor = null;
         let currentRoom = null;
         let isGameStarted = false;
+        
+        let playerNames = { red: 'اللاعب الأول', green: 'اللاعب الثاني' };
 
-        // WebRTC Variables
+        // WebRTC & Mic Variables
         let localStream;
         let peerConnection;
+        let isMicMuted = false;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
-        // Game Variables
+        // Game Grid (مبنية على النسب المئوية % لتدعم أي حجم شاشة)
         const nodes = [
-            { id: 0, x: 100, y: 100, edges: [1, 3] }, { id: 1, x: 200, y: 100, edges: [0, 2, 4] }, { id: 2, x: 300, y: 100, edges: [1, 5] },
-            { id: 3, x: 100, y: 200, edges: [0, 4] }, { id: 4, x: 200, y: 200, edges: [1, 3, 5, 7] }, { id: 5, x: 300, y: 200, edges: [2, 4] },
-            { id: 6, x: 100, y: 300, edges: [7, 9] }, { id: 7, x: 200, y: 300, edges: [4, 6, 8, 10] }, { id: 8, x: 300, y: 300, edges: [7, 11] },
-            { id: 9, x: 100, y: 400, edges: [6, 10] }, { id: 10, x: 200, y: 400, edges: [7, 9, 11] }, { id: 11, x: 300, y: 400, edges: [8, 10] }
+            { id: 0, x: 25, y: 20, edges: [1, 3] }, { id: 1, x: 50, y: 20, edges: [0, 2, 4] }, { id: 2, x: 75, y: 20, edges: [1, 5] },
+            { id: 3, x: 25, y: 40, edges: [0, 4] }, { id: 4, x: 50, y: 40, edges: [1, 3, 5, 7] }, { id: 5, x: 75, y: 40, edges: [2, 4] },
+            { id: 6, x: 25, y: 60, edges: [7, 9] }, { id: 7, x: 50, y: 60, edges: [4, 6, 8, 10] }, { id: 8, x: 75, y: 60, edges: [7, 11] },
+            { id: 9, x: 25, y: 80, edges: [6, 10] }, { id: 10, x: 50, y: 80, edges: [7, 9, 11] }, { id: 11, x: 75, y: 80, edges: [8, 10] }
         ];
+
         let pieces = [];
         let currentPlayer = 'red';
         let selectedPiece = null;
@@ -127,25 +199,42 @@
         let currentRound = 1;
         let redWins = 0; let greenWins = 0;
 
-        // --- Socket.IO & Connection Logic --- //
+        // --- أزرار التحكم --- //
+        
+        function exitGame() {
+            if(confirm("هل أنت متأكد أنك تريد مغادرة اللعبة؟")) {
+                location.reload(); // يعيد تحميل الصفحة للعودة لشاشة البداية وقطع الاتصال
+            }
+        }
+
+        function toggleMic() {
+            if(localStream) {
+                isMicMuted = !isMicMuted;
+                localStream.getAudioTracks()[0].enabled = !isMicMuted;
+                const micBtn = document.getElementById('mic-btn');
+                micBtn.innerHTML = isMicMuted ? '🔇 المايك مغلق' : '🎤 المايك مفتوح';
+                micBtn.className = isMicMuted ? 'toolbar-btn btn-mic muted' : 'toolbar-btn btn-mic';
+            }
+        }
+
+        // --- الاتصال وبدء اللعبة --- //
 
         function showGameScreen() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             document.getElementById('displayRoomCode').innerText = currentRoom;
-            document.getElementById('displayColor').innerText = myColor === 'red' ? 'أحمر' : 'أخضر';
         }
 
         async function createRoom() {
-            const name = document.getElementById('playerName').value;
+            const name = document.getElementById('playerName').value.trim();
             if(!name) return alert("الرجاء إدخال اسمك");
             await setupVoice();
             socket.emit('createRoom', name);
         }
 
         function joinRoom() {
-            const name = document.getElementById('playerName').value;
-            const room = document.getElementById('roomCodeInput').value;
+            const name = document.getElementById('playerName').value.trim();
+            const room = document.getElementById('roomCodeInput').value.trim();
             if(!name || !room) return alert("الرجاء إدخال الاسم ورقم الغرفة");
             socket.emit('joinRoom', { playerName: name, roomCode: room });
         }
@@ -161,36 +250,41 @@
 
         socket.on('errorMsg', (msg) => { document.getElementById('error-msg').innerText = msg; });
 
-        // --- WebRTC (Voice Chat) Logic --- //
+        // --- WebRTC (الصوت) --- //
         
         async function setupVoice() {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                document.getElementById('voice-status').style.display = 'flex';
+                document.getElementById('mic-btn').style.display = 'block';
                 
                 peerConnection = new RTCPeerConnection(configuration);
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-                peerConnection.ontrack = event => {
-                    document.getElementById('remoteAudio').srcObject = event.streams[0];
-                };
-
+                peerConnection.ontrack = event => { document.getElementById('remoteAudio').srcObject = event.streams[0]; };
                 peerConnection.onicecandidate = event => {
-                    if (event.candidate) {
-                        socket.emit('ice-candidate', { room: currentRoom, candidate: event.candidate });
-                    }
+                    if (event.candidate) socket.emit('ice-candidate', { room: currentRoom, candidate: event.candidate });
                 };
             } catch (err) {
                 console.error("لم نتمكن من الوصول للميكروفون:", err);
             }
         }
 
-        // عند بدء اللعبة، اللاعب الأحمر ينشئ العرض (Offer)
+        // --- منطق اللعبة الأساسي --- //
+
         socket.on('gameStart', async (players) => {
             isGameStarted = true;
+            
+            // تعيين وعرض أسماء اللاعبين
+            const pRed = players.find(p => p.color === 'red');
+            const pGreen = players.find(p => p.color === 'green');
+            if(pRed) playerNames.red = pRed.name;
+            if(pGreen) playerNames.green = pGreen.name;
+            
+            document.getElementById('red-name').innerText = playerNames.red;
+            document.getElementById('green-name').innerText = playerNames.green;
+
             initGame();
-            document.getElementById('status').innerText = 'دور اللاعب: الأحمر';
-            document.getElementById('status').className = 'turn-red';
+            updateStatusUI();
             
             if (myColor === 'red' && peerConnection) {
                 const offer = await peerConnection.createOffer();
@@ -206,16 +300,8 @@
             await peerConnection.setLocalDescription(answer);
             socket.emit('answer', { room: currentRoom, answer });
         });
-
-        socket.on('answer', async (answer) => {
-            await peerConnection.setRemoteDescription(answer);
-        });
-
-        socket.on('ice-candidate', async (candidate) => {
-            try { await peerConnection.addIceCandidate(candidate); } catch(e) {}
-        });
-
-        // --- Game Logic --- //
+        socket.on('answer', async (answer) => { await peerConnection.setRemoteDescription(answer); });
+        socket.on('ice-candidate', async (candidate) => { try { await peerConnection.addIceCandidate(candidate); } catch(e) {} });
 
         function setupPieces() {
             pieces = [
@@ -234,7 +320,7 @@
                 const pieceEl = document.createElement('div');
                 pieceEl.id = p.id; pieceEl.className = `piece ${p.player}`;
                 pieceEl.onclick = () => handlePieceClick(p);
-                document.getElementById('game-board').appendChild(pieceEl);
+                document.getElementById('game-wrapper').appendChild(pieceEl);
             });
             updatePiecesPosition();
         }
@@ -244,7 +330,7 @@
                 const node = nodes[p.nodeId];
                 const pieceEl = document.getElementById(p.id);
                 if(pieceEl) {
-                    pieceEl.style.left = `${node.x}px`; pieceEl.style.top = `${node.y}px`;
+                    pieceEl.style.left = `${node.x}%`; pieceEl.style.top = `${node.y}%`;
                     pieceEl.classList.toggle('selected', selectedPiece && selectedPiece.id === p.id);
                 }
             });
@@ -252,12 +338,8 @@
 
         function handlePieceClick(piece) {
             if (!isGameStarted || isGameOver || currentPlayer !== myColor || piece.player !== myColor) return;
-
-            if (selectedPiece && selectedPiece.id === piece.id) {
-                selectedPiece = null; clearArrows();
-            } else {
-                selectedPiece = piece; showArrows(piece);
-            }
+            if (selectedPiece && selectedPiece.id === piece.id) { selectedPiece = null; clearArrows(); } 
+            else { selectedPiece = piece; showArrows(piece); }
             updatePiecesPosition();
         }
 
@@ -267,34 +349,37 @@
             clearArrows();
             const currentNode = nodes[piece.nodeId];
             currentNode.edges.forEach(neighborId => {
-                const isOccupied = pieces.some(p => p.nodeId === neighborId);
-                if (!isOccupied) createArrow(currentNode, nodes[neighborId]);
+                if (!pieces.some(p => p.nodeId === neighborId)) createArrow(currentNode, nodes[neighborId]);
             });
         }
 
         function createArrow(fromNode, toNode) {
             const arrowEl = document.createElement('div');
             arrowEl.className = 'arrow';
-            let symbol = '', offsetX = 0, offsetY = 0, distance = 45; 
-            if (toNode.y < fromNode.y) { symbol = '↑'; offsetY = -distance; }
-            else if (toNode.y > fromNode.y) { symbol = '↓'; offsetY = distance; }
-            else if (toNode.x < fromNode.x) { symbol = '←'; offsetX = -distance; }
-            else if (toNode.x > fromNode.x) { symbol = '→'; offsetX = distance; }
+            let symbol = '';
+            
+            // حساب المسافة ديناميكياً باستخدام calc() و px لتجنب التداخل
+            let leftStyle = `${fromNode.x}%`;
+            let topStyle = `${fromNode.y}%`;
+            const offset = 40; // مسافة السهم عن المركز بالبكسل
+            
+            if (toNode.y < fromNode.y) { symbol = '↑'; topStyle = `calc(${fromNode.y}% - ${offset}px)`; }
+            else if (toNode.y > fromNode.y) { symbol = '↓'; topStyle = `calc(${fromNode.y}% + ${offset}px)`; }
+            else if (toNode.x < fromNode.x) { symbol = '←'; leftStyle = `calc(${fromNode.x}% - ${offset}px)`; }
+            else if (toNode.x > fromNode.x) { symbol = '→'; leftStyle = `calc(${fromNode.x}% + ${offset}px)`; }
 
             arrowEl.innerHTML = symbol;
-            arrowEl.style.left = `${fromNode.x + offsetX}px`; arrowEl.style.top = `${fromNode.y + offsetY}px`;
+            arrowEl.style.left = leftStyle; arrowEl.style.top = topStyle;
             
             arrowEl.onclick = () => {
                 const data = { room: currentRoom, pieceId: selectedPiece.id, targetId: toNode.id };
                 socket.emit('move', data);
                 executeMove(data.pieceId, data.targetId);
             };
-            document.getElementById('game-board').appendChild(arrowEl);
+            document.getElementById('game-wrapper').appendChild(arrowEl);
         }
 
-        socket.on('move', (data) => {
-            executeMove(data.pieceId, data.targetId);
-        });
+        socket.on('move', (data) => { executeMove(data.pieceId, data.targetId); });
 
         function executeMove(pieceId, targetNodeId) {
             const p = pieces.find(p => p.id === pieceId);
@@ -302,37 +387,40 @@
             selectedPiece = null;
             clearArrows();
             updatePiecesPosition();
-            
             if (!checkWin()) switchTurn();
         }
 
         function switchTurn() {
             currentPlayer = currentPlayer === 'red' ? 'green' : 'red';
+            updateStatusUI();
+        }
+
+        function updateStatusUI() {
             const statusEl = document.getElementById('status');
-            statusEl.textContent = currentPlayer === 'red' ? 'دور اللاعب: الأحمر' : 'دور اللاعب: الأخضر';
+            const playerName = currentPlayer === 'red' ? playerNames.red : playerNames.green;
+            statusEl.textContent = `دور: ${playerName}`;
             statusEl.className = currentPlayer === 'red' ? 'turn-red' : 'turn-green';
         }
 
         function checkWin() {
-            const redWinNodes = [9, 10, 11];
-            const redCurrent = pieces.filter(p => p.player === 'red').map(p => p.nodeId);
-            const greenWinNodes = [0, 1, 2];
-            const greenCurrent = pieces.filter(p => p.player === 'green').map(p => p.nodeId);
+            const redWin = [9, 10, 11].every(id => pieces.filter(p => p.player === 'red').map(p => p.nodeId).includes(id));
+            const greenWin = [0, 1, 2].every(id => pieces.filter(p => p.player === 'green').map(p => p.nodeId).includes(id));
 
-            if (redWinNodes.every(id => redCurrent.includes(id))) {
+            if (redWin) {
                 redWins++; document.getElementById('red-score').textContent = redWins;
-                endGame('اللاعب الأحمر هو الفائز! 🏆'); return true;
-            } else if (greenWinNodes.every(id => greenCurrent.includes(id))) {
+                endGame(`🏆 الفائز هو ${playerNames.red}!`, 'turn-red'); return true;
+            } else if (greenWin) {
                 greenWins++; document.getElementById('green-score').textContent = greenWins;
-                endGame('اللاعب الأخضر هو الفائز! 🏆'); return true;
+                endGame(`🏆 الفائز هو ${playerNames.green}!`, 'turn-green'); return true;
             }
             return false;
         }
 
-        function endGame(msg) {
+        function endGame(msg, className) {
             isGameOver = true;
-            document.getElementById('status').textContent = msg;
-            document.getElementById('status').className = 'turn-red'; // To reset styling
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = msg;
+            statusEl.className = className;
             document.getElementById('newRoundBtn').style.display = 'block';
         }
 
@@ -341,22 +429,18 @@
             startNewRoundLocal();
         }
 
-        socket.on('newRound', () => {
-            startNewRoundLocal();
-        });
+        socket.on('newRound', () => { startNewRoundLocal(); });
 
         function startNewRoundLocal() {
             currentRound++;
-            document.getElementById('round-counter').textContent = `الجولة: ${currentRound}`;
+            document.getElementById('round-counter').textContent = currentRound;
             document.getElementById('newRoundBtn').style.display = 'none';
             currentPlayer = 'red';
             isGameOver = false;
             selectedPiece = null;
-            document.getElementById('status').textContent = 'دور اللاعب: الأحمر';
-            document.getElementById('status').className = 'turn-red';
+            updateStatusUI();
             initGame();
         }
-
     </script>
 </body>
 </html>
