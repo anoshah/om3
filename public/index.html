@@ -6,33 +6,235 @@
     <title>لعبة تبديل الأماكن المباشرة</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+        
         body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            margin: 0; padding: 10px; 
-            display: flex; flex-direction: column; align-items: center; 
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, sans-serif; 
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            margin: 0; padding: 20px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 210, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
         
-        h1 { color: #2c3e50; font-size: 24px; text-align: center; margin: 10px 0 20px; }
+        h1 { 
+            color: #fff; font-size: 28px; text-align: center; margin: 0 0 30px; 
+            text-shadow: 0 0 20px rgba(120, 0, 255, 0.5);
+            position: relative; z-index: 1;
+        }
         
         /* شاشة الدخول */
         #login-screen { 
-            background: white; padding: 25px; border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            width: 100%; max-width: 400px; text-align: center; 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 35px; 
+            border-radius: 24px; 
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            width: 100%; max-width: 420px; text-align: center;
+            position: relative; z-index: 1;
+            animation: fadeInUp 0.6s ease-out;
         }
-        .input-group { margin-bottom: 15px; }
-        input { width: 100%; padding: 12px; border: 2px solid #ecf0f1; border-radius: 10px; font-size: 16px; outline: none; transition: border 0.3s; }
-        input:focus { border-color: #3498db; }
-        .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: opacity 0.2s, transform 0.1s; color: white; }
-        .btn:active { transform: scale(0.98); }
-        .btn-blue { background-color: #3498db; }
-        .btn-green { background-color: #2ecc71; margin-bottom: 15px;}
-        .btn-red { background-color: #e74c3c; }
-        .btn-gray { background-color: #7f8c8d; }
-        .error { color: #e74c3c; font-weight: bold; font-size: 14px; margin-top: 10px; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4); }
+            50% { box-shadow: 0 10px 40px rgba(124, 58, 237, 0.6); }
+        }
+
+        .login-title {
+            color: #fff; font-size: 26px; font-weight: 800; 
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.5); font-size: 14px; 
+            margin-bottom: 30px;
+        }
+        
+        .input-group { 
+            margin-bottom: 18px; 
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-align: right;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 18px;
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px 45px 14px 14px; 
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 12px; 
+            font-size: 16px; 
+            color: #fff;
+            outline: none; 
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input::placeholder { 
+            color: rgba(255, 255, 255, 0.3); 
+        }
+
+        input:focus { 
+            border-color: #7c3aed; 
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        input:focus + .input-icon,
+        input:focus ~ .input-icon {
+            color: #7c3aed;
+        }
+
+        .btn { 
+            border: none; padding: 14px; border-radius: 12px; 
+            cursor: pointer; font-weight: 700; font-size: 16px; width: 100%; 
+            transition: all 0.3s; color: white;
+            font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active { 
+            transform: translateY(0) scale(0.98); 
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        .btn-secondary { 
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .divider {
+            display: flex; align-items: center; gap: 15px;
+            margin: 25px 0;
+        }
+
+        .divider-line {
+            flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .divider-text {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .error { 
+            color: #f87171; 
+            font-weight: 600; 
+            font-size: 13px; 
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(248, 113, 113, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            display: none;
+        }
+
+        .error:not(:empty) {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
         /* شاشة اللعبة */
         #game-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 500px; }
@@ -130,18 +332,42 @@
     <h1>لعبة تبديل الأماكن</h1>
 
     <div id="login-screen">
-        <h2 style="color: #34495e; margin-top: 0;">أهلاً بك في اللعبة</h2>
+        <div class="login-logo">🎲</div>
+        <div class="login-title">مرحباً بك</div>
+        <div class="login-subtitle">العب مع أصدقائك في الوقت الحقيقي</div>
+
         <div class="input-group">
-            <input type="text" id="playerName" placeholder="أدخل اسمك هنا...">
+            <label>اسم اللاعب</label>
+            <div class="input-wrapper">
+                <input type="text" id="playerName" placeholder="اكتب اسمك هنا...">
+                <span class="input-icon">👤</span>
+            </div>
         </div>
-        <button class="btn btn-green" onclick="createRoom()">إنشاء غرفة جديدة ➕</button>
-        
-        <div style="margin: 20px 0; color: #7f8c8d; font-size: 14px;">أو انضم لغرفة موجودة</div>
-        
+
+        <button class="btn btn-primary" onclick="createRoom()">
+            <span class="btn-text">إنشاء غرفة جديدة</span>
+            <span class="loading-spinner"></span>
+        </button>
+
+        <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">أو انضم لغرفة</span>
+            <div class="divider-line"></div>
+        </div>
+
         <div class="input-group">
-            <input type="number" id="roomCodeInput" placeholder="أدخل رقم الغرفة (3 أرقام)">
+            <label>رقم الغرفة</label>
+            <div class="input-wrapper">
+                <input type="number" id="roomCodeInput" placeholder="أدخل رقم الغرفة">
+                <span class="input-icon">🔑</span>
+            </div>
         </div>
-        <button class="btn btn-blue" onclick="joinRoom()">انضمام للغرفة 🎮</button>
+
+        <button class="btn btn-secondary" onclick="joinRoom()">
+            <span class="btn-text">انضمام للغرفة</span>
+            <span class="loading-spinner"></span>
+        </button>
+
         <div id="error-msg" class="error"></div>
     </div>
 
@@ -251,7 +477,15 @@
 
         async function createRoom() {
             const name = document.getElementById('playerName').value.trim();
-            if(!name) return alert("الرجاء إدخال اسمك");
+            if(!name) {
+                document.getElementById('error-msg').textContent = 'الرجاء إدخال اسمك';
+                return;
+            }
+            const btn = document.querySelector('.btn-primary');
+            btn.disabled = true;
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.loading-spinner').style.display = 'block';
+            document.getElementById('error-msg').textContent = '';
             await setupVoice();
             socket.emit('createRoom', name);
         }
@@ -259,7 +493,19 @@
         function joinRoom() {
             const name = document.getElementById('playerName').value.trim();
             const room = document.getElementById('roomCodeInput').value.trim();
-            if(!name || !room) return alert("الرجاء إدخال الاسم ورقم الغرفة");
+            if(!name) {
+                document.getElementById('error-msg').textContent = 'الرجاء إدخال اسمك';
+                return;
+            }
+            if(!room) {
+                document.getElementById('error-msg').textContent = 'الرجاء إدخال رقم الغرفة';
+                return;
+            }
+            const btn = document.querySelector('.btn-secondary');
+            btn.disabled = true;
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.loading-spinner').style.display = 'block';
+            document.getElementById('error-msg').textContent = '';
             socket.emit('joinRoom', { playerName: name, roomCode: room });
         }
 
@@ -281,7 +527,21 @@
             await setupVoice();
         });
 
-        socket.on('errorMsg', (msg) => { document.getElementById('error-msg').innerText = msg; });
+        socket.on('errorMsg', (msg) => {
+            document.getElementById('error-msg').textContent = msg;
+            resetButtons();
+        });
+
+        function resetButtons() {
+            const primaryBtn = document.querySelector('.btn-primary');
+            const secondaryBtn = document.querySelector('.btn-secondary');
+            primaryBtn.disabled = false;
+            primaryBtn.querySelector('.btn-text').style.display = 'inline';
+            primaryBtn.querySelector('.loading-spinner').style.display = 'none';
+            secondaryBtn.disabled = false;
+            secondaryBtn.querySelector('.btn-text').style.display = 'inline';
+            secondaryBtn.querySelector('.loading-spinner').style.display = 'none';
+        }
 
         socket.on('playerDisconnected', () => {
             isGameStarted = false;
