@@ -245,91 +245,194 @@
         }
 
         /* شاشة اللعبة */
-        #game-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 500px; }
-        
-        /* شريط الأدوات العلوي */
-        .top-toolbar {
-            display: flex; justify-content: space-between; align-items: center; 
-            width: 100%; background: white; padding: 10px 15px; 
-            border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
+        #game-screen { 
+            display: none; flex-direction: column; align-items: center; 
+            width: 100%; max-width: 500px; height: 100vh; height: 100dvh;
+            padding: 12px; box-sizing: border-box;
+            overflow: hidden;
         }
-        .toolbar-btn {
-            background: none; border: none; font-size: 14px; font-weight: bold; 
-            cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: 0.2s;
+
+        /* شاشة الكمبيوتر */
+        @media (min-width: 768px) {
+            body {
+                background: #f1f5f9;
+            }
+            
+            h1 {
+                font-size: 28px;
+                margin-bottom: 24px;
+            }
+            
+            #login-screen {
+                padding: 36px 40px;
+                max-width: 440px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+            
+            #game-screen {
+                max-width: 480px;
+                padding: 16px;
+            }
+            
+            .scoreboard {
+                border-radius: 16px;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            }
+            
+            .player-card {
+                padding: 14px 12px;
+            }
+            
+            .player-avatar {
+                width: 32px; height: 32px;
+                font-size: 14px;
+            }
+            
+            .player-name {
+                font-size: 12px;
+                max-width: 100px;
+            }
+            
+            .score-num {
+                font-size: 26px;
+            }
+            
+            .center-panel {
+                padding: 10px 16px;
+                min-width: 80px;
+            }
+            
+            .round-badge {
+                padding: 4px 14px;
+                font-size: 11px;
+            }
+            
+            #status {
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 12px;
+            }
+            
+            #game-wrapper {
+                border-radius: 20px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            }
         }
-        .btn-exit { color: #e74c3c; background-color: #fadbd8; }
-        .btn-mic { color: #27ae60; background-color: #d5f5e3; }
-        .btn-mic.muted { color: #e74c3c; background-color: #fadbd8; }
-        .room-badge { background-color: #34495e; color: white; padding: 5px 12px; border-radius: 8px; font-size: 14px; }
+
+        /* شاشة الجوال الكبيرة */
+        @media (min-width: 480px) and (max-width: 767px) {
+            #game-screen {
+                max-width: 440px;
+            }
+        }
+
+        /* شاشة الجوال الصغيرة */
+        @media (max-width: 380px) {
+            .scoreboard {
+                border-radius: 12px;
+            }
+            
+            .player-card {
+                padding: 8px 6px;
+            }
+            
+            .player-avatar {
+                width: 24px; height: 24px;
+                font-size: 10px;
+            }
+            
+            .player-name {
+                font-size: 10px;
+                max-width: 60px;
+            }
+            
+            .score-num {
+                font-size: 20px;
+            }
+            
+            .center-panel {
+                padding: 6px 8px;
+                min-width: 60px;
+            }
+            
+            .round-badge {
+                font-size: 9px;
+                padding: 3px 8px;
+            }
+            
+            #status {
+                font-size: 12px;
+                padding: 6px;
+            }
+        }
 
         /* لوحة النتائج */
         .scoreboard { 
             display: flex; justify-content: space-between; align-items: stretch;
-            width: 100%; margin-bottom: 12px; background: #ffffff; 
-            padding: 0; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06); 
+            width: 100%; margin-bottom: 10px; background: #ffffff; 
+            padding: 0; border-radius: 14px; overflow: hidden;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.05); 
             border: 1px solid #f1f5f9;
         }
         .player-card { 
-            text-align: center; padding: 14px 10px; flex: 1; 
+            text-align: center; padding: 10px 8px; flex: 1; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: all 0.3s;
+            transition: all 0.3s; position: relative;
         }
-        .player-card.active { transform: scale(1.02); }
+        .player-card.active { transform: scale(1.01); }
         
-        .red-card { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); }
-        .red-card.active { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); box-shadow: inset 0 0 0 2px #ef4444; }
+        .red-card { background: linear-gradient(180deg, #fef2f2 0%, #fff5f5 100%); }
+        .red-card.active { background: linear-gradient(180deg, #fee2e2 0%, #fecaca 100%); box-shadow: inset 0 -3px 0 #ef4444; }
         
-        .green-card { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); }
-        .green-card.active { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); box-shadow: inset 0 0 0 2px #22c55e; }
+        .green-card { background: linear-gradient(180deg, #f0fdf4 0%, #f7fef9 100%); }
+        .green-card.active { background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%); box-shadow: inset 0 -3px 0 #22c55e; }
         
         .player-avatar {
-            width: 36px; height: 36px;
+            width: 28px; height: 28px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 16px; margin-bottom: 6px;
+            font-size: 12px; margin-bottom: 4px;
         }
         .red-card .player-avatar { background: #fecaca; }
         .green-card .player-avatar { background: #bbf7d0; }
         
         .player-name { 
-            font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; 
-            text-overflow: ellipsis; max-width: 90px; margin-bottom: 4px;
+            font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; 
+            text-overflow: ellipsis; max-width: 70px; margin-bottom: 2px;
         }
         .red-card .player-name { color: #b91c1c; }
         .green-card .player-name { color: #15803d; }
         
         .score-num { 
-            font-size: 28px; font-weight: 800; line-height: 1;
+            font-size: 22px; font-weight: 800; line-height: 1;
         }
         .red-card .score-num { color: #dc2626; }
         .green-card .score-num { color: #16a34a; }
         
         .player-label {
-            font-size: 10px; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.5px; margin-top: 4px;
+            font-size: 9px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-top: 2px;
         }
         .red-card .player-label { color: #f87171; }
         .green-card .player-label { color: #4ade80; }
         
         .center-panel {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 10px 14px;
+            padding: 8px 12px;
             background: #f8fafc;
             border-left: 1px solid #f1f5f9;
             border-right: 1px solid #f1f5f9;
-            min-width: 80px;
+            min-width: 70px;
+            gap: 6px;
         }
         
         .round-badge {
             background: #1e293b;
             color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 16px;
+            font-size: 10px;
             font-weight: 700;
-            margin-bottom: 6px;
             letter-spacing: 0.5px;
         }
         
@@ -337,9 +440,9 @@
             background: none;
             border: 1px solid #e2e8f0;
             color: #64748b;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -351,11 +454,28 @@
             border-color: #cbd5e1;
             color: #475569;
         }
+
+        .btn-exit-small {
+            background: none;
+            border: 1px solid #fecaca;
+            color: #ef4444;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .btn-exit-small:hover {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
         
         #status { 
-            width: 100%; text-align: center; padding: 10px; font-size: 14px; 
-            font-weight: 700; border-radius: 12px; margin-bottom: 12px; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; text-align: center; padding: 8px; font-size: 13px; 
+            font-weight: 700; border-radius: 10px; margin-bottom: 10px; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .turn-red { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
         .turn-green { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
@@ -502,10 +622,11 @@
         /* لوحة اللعبة المتجاوبة */
         #game-wrapper {
             width: 100%; aspect-ratio: 4 / 5;
-            background-color: #ffffff; border-radius: 20px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background-color: #ffffff; border-radius: 16px; 
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             position: relative; overflow: hidden;
-            margin-bottom: 20px;
+            flex: 1;
+            border: 1px solid #f1f5f9;
         }
 
         svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
@@ -616,12 +737,6 @@
     </div>
 
     <div id="game-screen">
-        <div class="top-toolbar">
-            <button class="toolbar-btn btn-exit" onclick="exitGame()">🚪 خروج</button>
-            <div class="room-badge">غرفة: <span id="displayRoomCode">---</span></div>
-            <button id="mic-btn" class="toolbar-btn btn-mic" onclick="toggleMic()" style="display:none;">🎤 المايك مفتوح</button>
-        </div>
-
         <audio id="remoteAudio" autoplay></audio>
 
         <div class="scoreboard">
@@ -635,6 +750,7 @@
             <div class="center-panel">
                 <div class="round-badge">الجولة <span id="round-counter">1</span></div>
                 <button class="btn-new-round" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة</button>
+                <button class="btn-exit-small" onclick="exitGame()">خروج</button>
             </div>
 
             <div class="player-card green-card" id="green-card">
@@ -744,9 +860,6 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('offline-login').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
-            document.getElementById('displayRoomCode').innerText = 'أوفلاين';
-            document.querySelector('.room-badge').style.display = 'none';
-            document.getElementById('mic-btn').style.display = 'none';
             
             // اختيار عشوائي لمن يبدأ في الجولة الأولى
             roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
@@ -769,8 +882,10 @@
                 isMicMuted = !isMicMuted;
                 localStream.getAudioTracks()[0].enabled = !isMicMuted;
                 const micBtn = document.getElementById('mic-btn');
-                micBtn.innerHTML = isMicMuted ? '🔇 المايك مغلق' : '🎤 المايك مفتوح';
-                micBtn.className = isMicMuted ? 'toolbar-btn btn-mic muted' : 'toolbar-btn btn-mic';
+                if (micBtn) {
+                    micBtn.innerHTML = isMicMuted ? '🔇 المايك مغلق' : '🎤 المايك مفتوح';
+                    micBtn.className = isMicMuted ? 'toolbar-btn btn-mic muted' : 'toolbar-btn btn-mic';
+                }
             }
         }
 
@@ -779,7 +894,6 @@
         function showGameScreen() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
-            document.getElementById('displayRoomCode').innerText = currentRoom;
         }
 
         async function createRoom() {
@@ -865,7 +979,8 @@
         async function setupVoice() {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                document.getElementById('mic-btn').style.display = 'block';
+                const micBtn = document.getElementById('mic-btn');
+                if (micBtn) micBtn.style.display = 'block';
                 
                 peerConnection = new RTCPeerConnection(configuration);
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
