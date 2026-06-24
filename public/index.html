@@ -232,7 +232,6 @@
             .score-num { font-size: 28px !important; }
             .player-name { font-size: 18px !important; max-width: 140px; }
             .center-panel { padding: 12px 18px; min-width: 100px; }
-            .room-code-badge { padding: 5px 14px; font-size: 13px; }
             .round-info { font-size: 16px; }
             .btn-new-round { padding: 6px 12px; font-size: 12px; }
             #status { font-size: 16px; padding: 12px; border-radius: 14px; margin-bottom: 16px; }
@@ -251,57 +250,70 @@
         /* لوحة النتائج المعدلة بشكل احترافي */
         .scoreboard { 
             display: flex; justify-content: space-between; align-items: stretch;
-            width: 100%; margin-bottom: 12px; background: transparent; 
+            width: 100%; margin-bottom: 10px; background: transparent; 
             padding: 0; border-radius: 0; box-shadow: none; border: none;
             gap: 8px;
         }
         
         .player-card { 
-            text-align: center; padding: 10px; flex: 1; 
+            text-align: center; padding: 12px 10px; flex: 1; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border-radius: 12px; border: 1px solid #e5e7eb;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border-radius: 14px; border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             transition: all 0.3s;
         }
         
-        .red-card { background: #fef2f2; }
-        .red-card.active { background: #fee2e2; border-color: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); transform: translateY(-2px); }
+        .red-card { background: linear-gradient(180deg, #fef2f2 0%, #fff 100%); }
+        .red-card.active { background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%); border-color: #ef4444; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15); transform: translateY(-2px); }
         
-        .green-card { background: #f0fdf4; }
-        .green-card.active { background: #dcfce7; border-color: #22c55e; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15); transform: translateY(-2px); }
+        .green-card { background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%); }
+        .green-card.active { background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%); border-color: #22c55e; box-shadow: 0 4px 16px rgba(34, 197, 94, 0.15); transform: translateY(-2px); }
         
         .player-name { 
             font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; 
-            text-overflow: ellipsis; max-width: 100px; margin-bottom: 4px;
+            text-overflow: ellipsis; max-width: 110px; margin-bottom: 4px;
         }
         .red-card .player-name { color: #991b1b; }
         .green-card .player-name { color: #166534; }
         
         .score-num { 
-            font-size: 20px; font-weight: 900; line-height: 1;
+            font-size: 28px; font-weight: 900; line-height: 1;
         }
         .red-card .score-num { color: #dc2626; }
         .green-card .score-num { color: #16a34a; }
         
         .center-panel {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 8px 10px; background: #f9fafb;
-            border: 1px solid #e5e7eb; border-radius: 12px;
-            min-width: 80px; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 10px 16px; background: #f9fafb;
+            border: 1px solid #e5e7eb; border-radius: 14px;
+            min-width: 90px; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .center-info { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .room-code-badge { background: #3b82f6; color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
         .round-info { font-size: 15px; font-weight: 700; color: #374151; }
         
         .btn-new-round {
             background: none; border: 1px solid #d1d5db; color: #4b5563;
-            padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700;
+            padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;
             cursor: pointer; transition: all 0.2s; font-family: inherit; display: none;
         }
         .btn-new-round:hover { background: #e5e7eb; }
-        .btn-mic-small { background: #dcfce7; border: 1px solid #86efac; color: #16a34a; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
-        .btn-mic-small.muted { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+
+        /* شريط معلومات اللعبة */
+        .game-info-bar {
+            display: flex; gap: 8px; width: 100%; margin-bottom: 10px;
+        }
+        .btn-info {
+            flex: 1; padding: 8px 12px; border-radius: 10px; border: 1px solid #e5e7eb;
+            font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+            font-family: inherit; background: #fff;
+        }
+        .btn-room-info { color: #3b82f6; border-color: #bfdbfe; background: #eff6ff; }
+        .btn-room-info:hover { background: #dbeafe; }
+        .btn-mic-info { color: #16a34a; border-color: #bbf7d0; background: #f0fdf4; }
+        .btn-mic-info:hover { background: #dcfce7; }
+        .btn-mic-info.muted { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
         
         #status { 
             width: 100%; text-align: center; padding: 10px; font-size: 14px; 
@@ -490,11 +502,9 @@
             
             <div class="center-panel">
                 <div class="center-info">
-                    <span id="room-code-badge" class="room-code-badge" style="display:none;">غرفة: <span id="displayRoomCode">---</span></span>
                     <span class="round-info">الجولة <span id="round-counter">1</span></span>
                 </div>
                 <button class="btn-new-round" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة</button>
-                <button id="mic-btn" class="btn-mic-small" onclick="toggleMic()" style="display:none;">🎤</button>
             </div>
 
             <div class="player-card green-card" id="green-card">
@@ -515,6 +525,11 @@
                 <line x1="50%" y1="11%" x2="50%" y2="89%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
                 <line x1="86%" y1="11%" x2="86%" y2="89%" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
             </svg>
+        </div>
+
+        <div class="game-info-bar" id="game-info-bar" style="display:none;">
+            <button class="btn-info btn-room-info" id="room-btn" onclick="copyRoomCode()">🚪 <span id="room-btn-code">---</span></button>
+            <button class="btn-info btn-mic-info" id="mic-btn" onclick="toggleMic()">🔇 ميك مغلق</button>
         </div>
 
         <div class="game-controls">
@@ -605,6 +620,16 @@
 
         function returnToHome() { location.reload(); }
 
+        function copyRoomCode() {
+            if (currentRoom) {
+                navigator.clipboard.writeText(currentRoom).then(() => {
+                    alert('تم نسخ كود الغرفة: ' + currentRoom);
+                }).catch(() => {
+                    alert('كود الغرفة: ' + currentRoom);
+                });
+            }
+        }
+
         function declareFinalWinner() {
             if (!isGameStarted) return;
             isGameOver = true;
@@ -649,8 +674,8 @@
                 localStream.getAudioTracks()[0].enabled = !isMicMuted;
                 const micBtn = document.getElementById('mic-btn');
                 if (micBtn) {
-                    micBtn.innerHTML = isMicMuted ? '🔇' : '🎤';
-                    micBtn.className = isMicMuted ? 'btn-mic-small muted' : 'btn-mic-small';
+                    micBtn.innerHTML = isMicMuted ? '🔇 ميك مغلق' : '🎤 ميك مفتوح';
+                    micBtn.className = isMicMuted ? 'btn-info btn-mic-info muted' : 'btn-info btn-mic-info';
                 }
             } else {
                 alert("الميكروفون غير متصل. تأكد من إعطاء الصلاحية للمتصفح وأنك تستخدم اتصال آمن.");
@@ -665,8 +690,15 @@
                 }
 
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                isMicMuted = true;
+                localStream.getAudioTracks()[0].enabled = false;
+                document.getElementById('game-info-bar').style.display = 'flex';
+                document.getElementById('room-btn-code').innerText = currentRoom;
                 const micBtn = document.getElementById('mic-btn');
-                if (micBtn) micBtn.style.display = 'block';
+                if (micBtn) {
+                    micBtn.innerHTML = '🔇 ميك مغلق';
+                    micBtn.className = 'btn-info btn-mic-info muted';
+                }
                 
                 peerConnection = new RTCPeerConnection(configuration);
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
@@ -686,10 +718,10 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             if (currentRoom && !isOfflineMode) {
-                document.getElementById('room-code-badge').style.display = 'block';
-                document.getElementById('displayRoomCode').innerText = currentRoom;
+                document.getElementById('game-info-bar').style.display = 'flex';
+                document.getElementById('room-btn-code').innerText = currentRoom;
             } else {
-                document.getElementById('room-code-badge').style.display = 'none';
+                document.getElementById('game-info-bar').style.display = 'none';
             }
         }
 
