@@ -593,6 +593,10 @@
             document.getElementById('offline-login').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             
+            const homeBtn = document.querySelector('.btn-home');
+            homeBtn.innerHTML = '🔄 إعادة الجولة';
+            homeBtn.onclick = function() { requestNewRound(); };
+            
             roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
             currentPlayer = roundFirstPlayer;
             
