@@ -247,8 +247,9 @@
         /* شاشة اللعبة */
         #game-screen { 
             display: none; flex-direction: column; align-items: center; 
-            width: 100%; max-width: 500px; height: 100vh; height: 100dvh;
-            padding: 12px; box-sizing: border-box;
+            width: 100%; max-width: 500px; 
+            height: 100vh; height: 100dvh;
+            padding: 10px; box-sizing: border-box;
             overflow: hidden;
         }
 
@@ -256,66 +257,79 @@
         @media (min-width: 768px) {
             body {
                 background: #f1f5f9;
+                justify-content: center;
+                height: 100vh;
+                padding: 20px;
             }
             
             h1 {
                 font-size: 28px;
-                margin-bottom: 24px;
+                margin-bottom: 20px;
             }
             
             #login-screen {
                 padding: 36px 40px;
-                max-width: 440px;
+                max-width: 420px;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                max-height: none;
             }
             
             #game-screen {
-                max-width: 480px;
-                padding: 16px;
+                max-width: 420px;
+                max-height: 90vh;
+                height: auto;
+                padding: 14px;
+                background: #f8fafc;
+                border-radius: 20px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+                overflow: hidden;
             }
             
             .scoreboard {
-                border-radius: 16px;
-                box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+                border-radius: 14px;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             }
             
             .player-card {
-                padding: 14px 12px;
+                padding: 12px 10px;
             }
             
             .player-avatar {
-                width: 32px; height: 32px;
-                font-size: 14px;
+                width: 30px; height: 30px;
+                font-size: 13px;
             }
             
             .player-name {
-                font-size: 12px;
-                max-width: 100px;
+                font-size: 11px;
+                max-width: 90px;
             }
             
             .score-num {
-                font-size: 26px;
+                font-size: 24px;
             }
             
             .center-panel {
-                padding: 10px 16px;
-                min-width: 80px;
+                padding: 8px 14px;
+                min-width: 75px;
             }
             
-            .round-badge {
-                padding: 4px 14px;
-                font-size: 11px;
+            .round-badge, .room-code-badge {
+                padding: 4px 12px;
+                font-size: 10px;
             }
             
             #status {
-                padding: 10px;
-                font-size: 14px;
-                border-radius: 12px;
+                padding: 8px;
+                font-size: 13px;
+                border-radius: 10px;
             }
             
             #game-wrapper {
-                border-radius: 20px;
-                box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+                border-radius: 16px;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+                flex: 1;
+                min-height: 0;
+                aspect-ratio: auto;
             }
         }
 
@@ -434,6 +448,22 @@
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.5px;
+        }
+
+        .room-code-badge {
+            background: #3b82f6;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .room-code-badge:hover {
+            background: #2563eb;
         }
         
         .btn-new-round {
@@ -626,6 +656,7 @@
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             position: relative; overflow: hidden;
             flex: 1;
+            min-height: 0;
             border: 1px solid #f1f5f9;
         }
 
@@ -748,6 +779,7 @@
             </div>
             
             <div class="center-panel">
+                <div id="room-code-badge" class="room-code-badge" style="display:none;">الغرفة: <span id="displayRoomCode">---</span></div>
                 <div class="round-badge">الجولة <span id="round-counter">1</span></div>
                 <button class="btn-new-round" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة</button>
                 <button class="btn-exit-small" onclick="exitGame()">خروج</button>
@@ -894,6 +926,12 @@
         function showGameScreen() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
+            if (currentRoom && !isOfflineMode) {
+                document.getElementById('room-code-badge').style.display = 'block';
+                document.getElementById('displayRoomCode').innerText = currentRoom;
+            } else {
+                document.getElementById('room-code-badge').style.display = 'none';
+            }
         }
 
         async function createRoom() {
