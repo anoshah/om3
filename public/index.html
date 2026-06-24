@@ -232,14 +232,13 @@
             .score-num { font-size: 28px !important; }
             .player-name { font-size: 18px !important; max-width: 140px; }
             .center-panel { padding: 12px 18px; min-width: 100px; }
-            .room-code-badge { padding: 5px 14px; font-size: 13px; }
             .round-info { font-size: 16px; }
             .btn-new-round { padding: 6px 12px; font-size: 12px; }
             #status { font-size: 16px; padding: 12px; border-radius: 14px; margin-bottom: 16px; }
             #game-wrapper { border-radius: 20px; border: 2px solid #e5e7eb; margin-bottom: 20px; }
             .piece { width: 48px; height: 48px; }
             .arrow { width: 36px; height: 36px; font-size: 18px; }
-            .btn-control { padding: 14px 24px; font-size: 16px; border-radius: 14px; }
+            .btn-control { padding: 14px 12px; font-size: 14px; border-radius: 14px; }
         }
 
         @media (min-width: 1024px) {
@@ -291,7 +290,6 @@
         }
 
         .center-info { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .room-code-badge { background: #3b82f6; color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
         .round-info { font-size: 15px; font-weight: 700; color: #374151; }
         
         .btn-new-round {
@@ -300,8 +298,7 @@
             cursor: pointer; transition: all 0.2s; font-family: inherit; display: none;
         }
         .btn-new-round:hover { background: #e5e7eb; }
-        .btn-mic-small { background: #dcfce7; border: 1px solid #86efac; color: #16a34a; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
-        .btn-mic-small.muted { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+        .btn-control.btn-new { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
         
         #status { 
             width: 100%; text-align: center; padding: 10px; font-size: 14px; 
@@ -364,18 +361,23 @@
 
         /* أزرار التحكم الجديدة */
         .game-controls {
-            display: flex; gap: 10px; width: 100%; margin-top: auto;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-top: auto;
         }
         .btn-control {
-            flex: 1; padding: 12px; border-radius: 12px; border: none;
-            font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 12px 8px; border-radius: 12px; border: none;
+            font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
             font-family: inherit;
         }
         .btn-home { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
         .btn-home:hover { background: #e2e8f0; }
         .btn-end { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
         .btn-end:hover { background: #fee2e2; }
+        .btn-room { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; font-size: 11px; padding: 8px 6px; }
+        .btn-room:hover { background: #dbeafe; }
+        .btn-mic { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .btn-mic:hover { background: #dcfce7; }
+        .btn-mic.muted { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
 
         svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         
@@ -490,11 +492,9 @@
             
             <div class="center-panel">
                 <div class="center-info">
-                    <span id="room-code-badge" class="room-code-badge" style="display:none;">غرفة: <span id="displayRoomCode">---</span></span>
                     <span class="round-info">الجولة <span id="round-counter">1</span></span>
                 </div>
                 <button class="btn-new-round" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة</button>
-                <button id="mic-btn" class="btn-mic-small" onclick="toggleMic()" style="display:none;">🎤</button>
             </div>
 
             <div class="player-card green-card" id="green-card">
@@ -519,7 +519,9 @@
 
         <div class="game-controls">
             <button class="btn-control btn-home" onclick="returnToHome()">🏠 الرئيسية</button>
-            <button class="btn-control btn-end" onclick="declareFinalWinner()">🏆 إنهاء اللعبة</button>
+            <button class="btn-control btn-room" id="room-btn" style="display:none;" onclick="copyRoomCode()"><span>🚪</span><span id="room-btn-code">---</span></button>
+            <button class="btn-control btn-mic" id="mic-btn-bottom" onclick="toggleMic()" style="display:none;">🎤 الميك</button>
+            <button class="btn-control btn-end" onclick="declareFinalWinner()">🏆 إنهاء</button>
         </div>
     </div>
 
@@ -593,9 +595,9 @@
             document.getElementById('offline-login').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             
-            const homeBtn = document.querySelector('.btn-home');
-            homeBtn.innerHTML = '🔄 إعادة الجولة';
-            homeBtn.onclick = function() { restartRoundLocal(); };
+            document.querySelector('.game-controls').style.gridTemplateColumns = 'repeat(3, 1fr)';
+            document.querySelector('.btn-home').innerHTML = '🏠 الرئيسية';
+            document.querySelector('.btn-home').onclick = function() { returnToHome(); };
             
             roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
             currentPlayer = roundFirstPlayer;
@@ -604,6 +606,16 @@
         }
 
         function returnToHome() { location.reload(); }
+
+        function copyRoomCode() {
+            if (currentRoom) {
+                navigator.clipboard.writeText(currentRoom).then(() => {
+                    alert('تم نسخ كود الغرفة: ' + currentRoom);
+                }).catch(() => {
+                    alert('كود الغرفة: ' + currentRoom);
+                });
+            }
+        }
 
         function declareFinalWinner() {
             if (!isGameStarted) return;
@@ -647,10 +659,10 @@
             if(localStream) {
                 isMicMuted = !isMicMuted;
                 localStream.getAudioTracks()[0].enabled = !isMicMuted;
-                const micBtn = document.getElementById('mic-btn');
+                const micBtn = document.getElementById('mic-btn-bottom');
                 if (micBtn) {
-                    micBtn.innerHTML = isMicMuted ? '🔇' : '🎤';
-                    micBtn.className = isMicMuted ? 'btn-mic-small muted' : 'btn-mic-small';
+                    micBtn.innerHTML = isMicMuted ? '🔇 الميك' : '🎤 الميك';
+                    micBtn.className = isMicMuted ? 'btn-control btn-mic muted' : 'btn-control btn-mic';
                 }
             } else {
                 alert("الميكروفون غير متصل. تأكد من إعطاء الصلاحية للمتصفح وأنك تستخدم اتصال آمن.");
@@ -665,8 +677,8 @@
                 }
 
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const micBtn = document.getElementById('mic-btn');
-                if (micBtn) micBtn.style.display = 'block';
+                const micBtn = document.getElementById('mic-btn-bottom');
+                if (micBtn) micBtn.style.display = 'flex';
                 
                 peerConnection = new RTCPeerConnection(configuration);
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
@@ -686,10 +698,10 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             if (currentRoom && !isOfflineMode) {
-                document.getElementById('room-code-badge').style.display = 'block';
-                document.getElementById('displayRoomCode').innerText = currentRoom;
+                document.getElementById('room-btn').style.display = 'flex';
+                document.getElementById('room-btn-code').innerText = currentRoom;
             } else {
-                document.getElementById('room-code-badge').style.display = 'none';
+                document.getElementById('room-btn').style.display = 'none';
             }
         }
 
