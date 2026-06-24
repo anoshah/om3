@@ -265,23 +265,106 @@
 
         /* لوحة النتائج */
         .scoreboard { 
-            display: flex; justify-content: space-between; align-items: center; 
-            width: 100%; margin-bottom: 15px; background-color: #fff; 
-            padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            display: flex; justify-content: space-between; align-items: stretch;
+            width: 100%; margin-bottom: 12px; background: #ffffff; 
+            padding: 0; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06); 
+            border: 1px solid #f1f5f9;
         }
-        .player-card { text-align: center; padding: 10px; border-radius: 10px; flex: 1; margin: 0 5px; }
-        .red-card { background-color: #fadbd8; color: #c0392b; border: 2px solid #e74c3c; }
-        .green-card { background-color: #d5f5e3; color: #27ae60; border: 2px solid #2ecc71; }
-        .player-name { font-size: 14px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; margin: 0 auto; }
-        .score-num { display: block; font-size: 26px; font-weight: bold; margin-top: 5px; }
+        .player-card { 
+            text-align: center; padding: 14px 10px; flex: 1; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+        .player-card.active { transform: scale(1.02); }
+        
+        .red-card { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); }
+        .red-card.active { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); box-shadow: inset 0 0 0 2px #ef4444; }
+        
+        .green-card { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); }
+        .green-card.active { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); box-shadow: inset 0 0 0 2px #22c55e; }
+        
+        .player-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; margin-bottom: 6px;
+        }
+        .red-card .player-avatar { background: #fecaca; }
+        .green-card .player-avatar { background: #bbf7d0; }
+        
+        .player-name { 
+            font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; 
+            text-overflow: ellipsis; max-width: 90px; margin-bottom: 4px;
+        }
+        .red-card .player-name { color: #b91c1c; }
+        .green-card .player-name { color: #15803d; }
+        
+        .score-num { 
+            font-size: 28px; font-weight: 800; line-height: 1;
+        }
+        .red-card .score-num { color: #dc2626; }
+        .green-card .score-num { color: #16a34a; }
+        
+        .player-label {
+            font-size: 10px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-top: 4px;
+        }
+        .red-card .player-label { color: #f87171; }
+        .green-card .player-label { color: #4ade80; }
+        
+        .center-panel {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-left: 1px solid #f1f5f9;
+            border-right: 1px solid #f1f5f9;
+            min-width: 80px;
+        }
+        
+        .round-badge {
+            background: #1e293b;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-new-round {
+            background: none;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: none;
+        }
+        .btn-new-round:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
         
         #status { 
-            width: 100%; text-align: center; padding: 12px; font-size: 18px; 
-            font-weight: bold; border-radius: 12px; margin-bottom: 15px; transition: 0.3s; 
+            width: 100%; text-align: center; padding: 10px; font-size: 14px; 
+            font-weight: 700; border-radius: 12px; margin-bottom: 12px; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .turn-red { background-color: #fadbd8; color: #c0392b; }
-        .turn-green { background-color: #d5f5e3; color: #27ae60; }
-        .win-msg { background-color: #f1c40f; color: #fff; animation: blink-text 1s infinite alternate; }
+        .turn-red { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+        .turn-green { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .win-msg { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; animation: pulse-status 1.5s infinite; }
+
+        @keyframes pulse-status {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 0 4px rgba(251, 191, 36, 0); }
+        }
 
         @keyframes blink-text {
             from { opacity: 1; }
@@ -429,19 +512,23 @@
         <audio id="remoteAudio" autoplay></audio>
 
         <div class="scoreboard">
-            <div class="player-card red-card">
+            <div class="player-card red-card" id="red-card">
+                <div class="player-avatar">🔴</div>
                 <div id="red-name" class="player-name">---</div>
                 <span id="red-score" class="score-num">0</span>
+                <span class="player-label">أحمر</span>
             </div>
             
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                <div style="font-weight: bold; color: #7f8c8d; font-size: 12px;">الجولة <span id="round-counter">1</span></div>
-                <button class="btn btn-blue" style="padding: 5px 10px; font-size: 12px; display: none;" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة 🔄</button>
+            <div class="center-panel">
+                <div class="round-badge">الجولة <span id="round-counter">1</span></div>
+                <button class="btn-new-round" onclick="requestNewRound()" id="newRoundBtn">جولة جديدة</button>
             </div>
 
-            <div class="player-card green-card">
+            <div class="player-card green-card" id="green-card">
+                <div class="player-avatar">🟢</div>
                 <div id="green-name" class="player-name">في الانتظار...</div>
                 <span id="green-score" class="score-num">0</span>
+                <span class="player-label">أخضر</span>
             </div>
         </div>
 
@@ -815,8 +902,13 @@
         function updateStatusUI() {
             const statusEl = document.getElementById('status');
             const playerName = currentPlayer === 'red' ? playerNames.red : playerNames.green;
-            statusEl.textContent = `دور: ${playerName}`;
+            const icon = currentPlayer === 'red' ? '🔴' : '🟢';
+            statusEl.innerHTML = `${icon} دور: ${playerName}`;
             statusEl.className = currentPlayer === 'red' ? 'turn-red' : 'turn-green';
+            
+            document.getElementById('red-card').classList.toggle('active', currentPlayer === 'red');
+            document.getElementById('green-card').classList.toggle('active', currentPlayer === 'green');
+            
             updateBlinkingBorder();
         }
 
@@ -838,9 +930,11 @@
         function endGame(msg, className) {
             isGameOver = true;
             const statusEl = document.getElementById('status');
-            statusEl.textContent = msg;
+            statusEl.innerHTML = msg;
             statusEl.className = className;
             document.getElementById('newRoundBtn').style.display = 'block';
+            document.getElementById('red-card').classList.remove('active');
+            document.getElementById('green-card').classList.remove('active');
             updateBlinkingBorder();
         }
 
