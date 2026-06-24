@@ -52,6 +52,27 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('مستخدم غادر:', socket.id);
+        
+        // البحث عن الغرفة التي ينتمي إليها اللاعب المفقود
+        for (const roomCode in rooms) {
+            const room = rooms[roomCode];
+            const playerIndex = room.players.findIndex(p => p.id === socket.id);
+            
+            if (playerIndex !== -1) {
+                // إزالة اللاعب من الغرفة
+                room.players.splice(playerIndex, 1);
+                
+                // إشعار اللاعب الآخر بالفصل
+                io.to(roomCode).emit('playerDisconnected');
+                
+                // إذا لم يبقَ أحد، حذف الغرفة
+                if (room.players.length === 0) {
+                    delete rooms[roomCode];
+                    console.log(`الغرفة ${roomCode} تم حذفها (لا يوجد لاعبين)`);
+                }
+                break;
+            }
+        }
     });
 });
 

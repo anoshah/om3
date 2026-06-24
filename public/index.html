@@ -283,6 +283,16 @@
 
         socket.on('errorMsg', (msg) => { document.getElementById('error-msg').innerText = msg; });
 
+        socket.on('playerDisconnected', () => {
+            isGameStarted = false;
+            isGameOver = true;
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'اللاعب الآخر غادر اللعبة!';
+            statusEl.className = 'win-msg';
+            document.querySelectorAll('.piece').forEach(el => el.remove());
+            document.querySelectorAll('.arrow').forEach(el => el.remove());
+        });
+
         // --- WebRTC (الصوت) --- //
         
         async function setupVoice() {
