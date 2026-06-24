@@ -907,9 +907,13 @@
 
         function updateStatusUI() {
             const statusEl = document.getElementById('status');
-            const playerName = currentPlayer === 'red' ? playerNames.red : playerNames.green;
             const icon = currentPlayer === 'red' ? '🔴' : '🟢';
-            statusEl.innerHTML = `${icon} دور: ${playerName}`;
+            if (!isOfflineMode && currentPlayer === myColor) {
+                statusEl.innerHTML = `${icon} دورك انت`;
+            } else {
+                const playerName = currentPlayer === 'red' ? playerNames.red : playerNames.green;
+                statusEl.innerHTML = `${icon} دور: ${playerName}`;
+            }
             statusEl.className = currentPlayer === 'red' ? 'turn-red' : 'turn-green';
             document.getElementById('red-card').classList.toggle('active', currentPlayer === 'red');
             document.getElementById('green-card').classList.toggle('active', currentPlayer === 'green');
