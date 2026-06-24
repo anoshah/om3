@@ -712,6 +712,7 @@
         let isGameOver = false;
         let currentRound = 1;
         let redWins = 0; let greenWins = 0;
+        let roundFirstPlayer = null; // اللاعب الذي يبدأ في كل جولة
 
         // --- أزرار التحكم --- //
         
@@ -746,6 +747,10 @@
             document.getElementById('displayRoomCode').innerText = 'أوفلاين';
             document.querySelector('.room-badge').style.display = 'none';
             document.getElementById('mic-btn').style.display = 'none';
+            
+            // اختيار عشوائي لمن يبدأ في الجولة الأولى
+            roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
+            currentPlayer = roundFirstPlayer;
             
             initGame();
             updateStatusUI();
@@ -888,8 +893,15 @@
             document.getElementById('red-name').innerText = playerNames.red;
             document.getElementById('green-name').innerText = playerNames.green;
 
+            // اللاعب الأحمر (المنشئ) يختار من يبدأ عشوائياً ويرسل النتيجة
+            if (myColor === 'red') {
+                roundFirstPlayer = Math.random() < 0.5 ? 'red' : 'green';
+                socket.emit('setFirstPlayer', { room: currentRoom, firstPlayer: roundFirstPlayer });
+            }
+            
+            currentPlayer = roundFirstPlayer || 'red';
             initGame();
-            updateStatusUI(); // عرض اسم اللاعب الذي عليه الدور
+            updateStatusUI();
             
             if (myColor === 'red' && peerConnection) {
                 const offer = await peerConnection.createOffer();
@@ -1011,6 +1023,12 @@
 
         socket.on('move', (data) => { executeMove(data.pieceId, data.targetId); });
 
+        socket.on('setFirstPlayer', (data) => {
+            roundFirstPlayer = data.firstPlayer;
+            currentPlayer = roundFirstPlayer;
+            updateStatusUI();
+        });
+
         function executeMove(pieceId, targetNodeId) {
             const p = pieces.find(p => p.id === pieceId);
             p.nodeId = targetNodeId;
@@ -1127,7 +1145,11 @@
             currentRound++;
             document.getElementById('round-counter').textContent = currentRound;
             document.getElementById('newRoundBtn').style.display = 'none';
-            currentPlayer = 'red';
+            
+            // تبديل الدور: من بدأ الجولة السابقة ينتهي دوره
+            currentPlayer = roundFirstPlayer === 'red' ? 'green' : 'red';
+            roundFirstPlayer = currentPlayer;
+            
             isGameOver = false;
             selectedPiece = null;
             updateStatusUI();

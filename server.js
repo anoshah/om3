@@ -45,6 +45,10 @@ io.on('connection', (socket) => {
         socket.to(roomCode).emit('newRound');
     });
 
+    socket.on('setFirstPlayer', (data) => {
+        socket.to(data.room).emit('setFirstPlayer', { firstPlayer: data.firstPlayer });
+    });
+
     // إشارات WebRTC للدردشة الصوتية
     socket.on('offer', (data) => socket.to(data.room).emit('offer', data.offer));
     socket.on('answer', (data) => socket.to(data.room).emit('answer', data.answer));
