@@ -574,7 +574,6 @@
 
         function returnToHome() { location.reload(); }
 
-        // دالة احتفال النهاية المضافة حديثاً
         function declareFinalWinner() {
             if (!isGameStarted) return;
             isGameOver = true;
@@ -612,6 +611,7 @@
 
         socket.on('endGameFinal', () => { declareFinalWinner(); });
 
+        /* ======= التعديل الجديد لزر وكود الميكروفون ======= */
         function toggleMic() {
             if(localStream) {
                 isMicMuted = !isMicMuted;
@@ -621,8 +621,35 @@
                     micBtn.innerHTML = isMicMuted ? '🔇' : '🎤';
                     micBtn.className = isMicMuted ? 'btn-mic-small muted' : 'btn-mic-small';
                 }
+            } else {
+                alert("الميكروفون غير متصل. تأكد من إعطاء الصلاحية للمتصفح وأنك تستخدم اتصال آمن.");
             }
         }
+
+        async function setupVoice() {
+            try {
+                // التحقق من دعم المتصفح
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error("متصفحك أو بيئة الاتصال (HTTP) لا تدعم الميكروفون.");
+                }
+
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const micBtn = document.getElementById('mic-btn');
+                if (micBtn) micBtn.style.display = 'block';
+                
+                peerConnection = new RTCPeerConnection(configuration);
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                
+                peerConnection.ontrack = event => { document.getElementById('remoteAudio').srcObject = event.streams[0]; };
+                peerConnection.onicecandidate = event => { 
+                    if (event.candidate) socket.emit('ice-candidate', { room: currentRoom, candidate: event.candidate }); 
+                };
+            } catch (err) { 
+                console.error("خطأ في الميكروفون:", err);
+                alert("لم نتمكن من تشغيل الميكروفون: " + err.message + "\n\nتأكد من إعطاء الصلاحية للمتصفح وأنك تجرب اللعبة عبر (HTTPS) أو (localhost).");
+            }
+        }
+        /* ================================================== */
 
         function showGameScreen() {
             document.getElementById('login-screen').style.display = 'none';
@@ -686,18 +713,6 @@
             document.querySelectorAll('.piece').forEach(el => el.remove());
             document.querySelectorAll('.arrow').forEach(el => el.remove());
         });
-
-        async function setupVoice() {
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const micBtn = document.getElementById('mic-btn');
-                if (micBtn) micBtn.style.display = 'block';
-                peerConnection = new RTCPeerConnection(configuration);
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-                peerConnection.ontrack = event => { document.getElementById('remoteAudio').srcObject = event.streams[0]; };
-                peerConnection.onicecandidate = event => { if (event.candidate) socket.emit('ice-candidate', { room: currentRoom, candidate: event.candidate }); };
-            } catch (err) { console.error("لم نتمكن من الوصول للميكروفون:", err); }
-        }
 
         socket.on('gameStart', async (players) => {
             isGameStarted = true;
