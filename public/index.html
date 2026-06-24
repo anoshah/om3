@@ -44,7 +44,7 @@
         }
         
         /* شاشة الدخول */
-        #login-screen { 
+        #login-screen, #offline-login { 
             background: #ffffff;
             padding: 30px 28px; 
             border-radius: 24px; 
@@ -53,9 +53,11 @@
             width: calc(100% - 32px); max-width: 400px; text-align: center;
             position: relative; z-index: 1;
             animation: fadeInUp 0.5s ease-out;
-            max-height: 85vh;
-            overflow-y: auto;
+            max-height: 90vh;
+            overflow: hidden;
         }
+
+        #offline-login { display: none; }
 
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
@@ -196,7 +198,7 @@
             width: 100%; max-width: 600px; 
             height: 100vh; height: 100dvh;
             padding: 15px; box-sizing: border-box;
-            overflow-y: auto;
+            overflow: hidden;
             position: relative;
         }
 
@@ -207,11 +209,12 @@
                 padding: 20px;
             }
             h1 { font-size: 32px; margin-bottom: 24px; }
-            #login-screen { 
+            #login-screen, #offline-login { 
                 padding: 40px 48px; max-width: 440px; 
                 box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); 
                 max-height: none;
                 border-radius: 28px;
+                overflow: hidden;
             }
             
             #game-screen {
@@ -222,6 +225,7 @@
                 background: #ffffff;
                 border-radius: 24px;
                 box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+                overflow: hidden;
             }
             .scoreboard { margin-bottom: 16px; }
             .player-card { padding: 16px; }
@@ -443,37 +447,35 @@
         </div>
     </div>
 
-    <div id="offline-login" style="display:none; position:relative; z-index:1;">
-        <div style="background:#ffffff; padding:30px 28px; border-radius:24px; box-shadow:0 4px 24px rgba(0,0,0,0.08); border:1px solid #f1f5f9; width:calc(100% - 32px); max-width:400px; text-align:center;">
-            <div class="login-logo">🎮</div>
-            <div class="login-title">العب أوفلاين</div>
-            <div class="login-subtitle">العب مع صديقك على نفس الجهاز</div>
+    <div id="offline-login">
+        <div class="login-logo">🎮</div>
+        <div class="login-title">العب أوفلاين</div>
+        <div class="login-subtitle">العب مع صديقك على نفس الجهاز</div>
 
-            <div class="input-group">
-                <label>اسم اللاعب الأحمر</label>
-                <div class="input-wrapper">
-                    <input type="text" id="offlineName1" placeholder="اللاعب الأول...">
-                    <span class="input-icon">🔴</span>
-                </div>
+        <div class="input-group">
+            <label>اسم اللاعب الأحمر</label>
+            <div class="input-wrapper">
+                <input type="text" id="offlineName1" placeholder="اللاعب الأول...">
+                <span class="input-icon">🔴</span>
             </div>
+        </div>
 
-            <div class="input-group">
-                <label>اسم اللاعب الأخضر</label>
-                <div class="input-wrapper">
-                    <input type="text" id="offlineName2" placeholder="اللاعب الثاني...">
-                    <span class="input-icon">🟢</span>
-                </div>
+        <div class="input-group">
+            <label>اسم اللاعب الأخضر</label>
+            <div class="input-wrapper">
+                <input type="text" id="offlineName2" placeholder="اللاعب الثاني...">
+                <span class="input-icon">🟢</span>
             </div>
+        </div>
 
-            <button class="btn btn-offline" onclick="startOfflineGame()" style="margin-top: 4px;">
-                ابدأ اللعبة 🔥
+        <button class="btn btn-offline" onclick="startOfflineGame()" style="margin-top: 4px;">
+            ابدأ اللعبة 🔥
+        </button>
+
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid #f1f5f9;">
+            <button onclick="toggleOfflineMode()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:13px; font-family:inherit;">
+                العودة للعب الأونلاين ←
             </button>
-
-            <div style="margin-top:16px; padding-top:12px; border-top:1px solid #f1f5f9;">
-                <button onclick="toggleOfflineMode()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:13px; font-family:inherit;">
-                    العودة للعب الأونلاين ←
-                </button>
-            </div>
         </div>
     </div>
 
