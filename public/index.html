@@ -529,7 +529,7 @@
         </div>
 
         <div class="game-info-bar" id="game-info-bar" style="display:none;">
-            <button class="btn-info btn-room-info" id="room-btn" onclick="copyRoomCode()">رقم الغرفة: <span id="room-btn-code">---</span></button>
+            <button class="btn-info btn-room-info" id="room-btn" onclick="copyRoomCode()">رقم الغرفة <span id="room-btn-code">---</span></button>
             <button class="btn-info btn-mic-info" id="mic-btn" onclick="toggleMic()">🔇 مايك مغلق</button>
         </div>
 
@@ -596,8 +596,8 @@
         }
 
         function startOfflineGame() {
-            const name1 = document.getElementById('offlineName1').value.trim() || 'اللاعب الأحمر';
-            const name2 = document.getElementById('offlineName2').value.trim() || 'اللاعب الأخضر';
+            const name1 = document.getElementById('offlineName1').value.trim() || 'الأحمر';
+            const name2 = document.getElementById('offlineName2').value.trim() || 'الأخضر';
             
             isOfflineMode = true; isGameStarted = true; myColor = 'red';
             playerNames.red = name1; playerNames.green = name2;
@@ -638,6 +638,12 @@
         }
 
         function confirmEndGame() {
+            if (!isGameStarted) {
+                if (confirm('هل تريد العودة للصفحة الرئيسية؟')) {
+                    returnToHome();
+                }
+                return;
+            }
             if (confirm('هل تريد إنهاء اللعبة؟ سيتم تحديد الفائز النهائي.')) {
                 declareFinalWinner();
             }
