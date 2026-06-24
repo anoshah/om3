@@ -74,7 +74,7 @@
 
         /* لوحة اللعبة المتجاوبة */
         #game-wrapper {
-            width: 100%; aspect-ratio: 4 / 5; /* يحافظ على التناسب 4 عرض إلى 5 طول */
+            width: 100%; aspect-ratio: 4 / 5;
             background-color: #ffffff; border-radius: 20px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             position: relative; overflow: hidden;
@@ -88,7 +88,7 @@
             border-radius: 50%; z-index: 3; cursor: pointer; 
             transition: top 0.3s ease, left 0.3s ease, transform 0.2s; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
-            transform: translate(-50%, -50%); /* توسيط القطعة بالنسبة للإحداثيات */
+            transform: translate(-50%, -50%);
         }
         .piece.red { background: radial-gradient(circle at 30% 30%, #ff7675, #d63031); border: 2px solid #b2bec3; }
         .piece.green { background: radial-gradient(circle at 30% 30%, #55efc4, #00b894); border: 2px solid #b2bec3; }
@@ -136,7 +136,7 @@
 
         <div class="scoreboard">
             <div class="player-card red-card">
-                <div id="red-name" class="player-name">اللاعب الأول</div>
+                <div id="red-name" class="player-name">---</div>
                 <span id="red-score" class="score-num">0</span>
             </div>
             
@@ -176,7 +176,8 @@
         let currentRoom = null;
         let isGameStarted = false;
         
-        let playerNames = { red: 'اللاعب الأول', green: 'اللاعب الثاني' };
+        // كائن لتخزين أسماء اللاعبين الحقيقية
+        let playerNames = { red: '---', green: 'في الانتظار...' };
 
         // WebRTC & Mic Variables
         let localStream;
@@ -184,7 +185,7 @@
         let isMicMuted = false;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
-        // Game Grid (مبنية على النسب المئوية % لتدعم أي حجم شاشة)
+        // Game Grid
         const nodes = [
             { id: 0, x: 25, y: 20, edges: [1, 3] }, { id: 1, x: 50, y: 20, edges: [0, 2, 4] }, { id: 2, x: 75, y: 20, edges: [1, 5] },
             { id: 3, x: 25, y: 40, edges: [0, 4] }, { id: 4, x: 50, y: 40, edges: [1, 3, 5, 7] }, { id: 5, x: 75, y: 40, edges: [2, 4] },
@@ -203,7 +204,7 @@
         
         function exitGame() {
             if(confirm("هل أنت متأكد أنك تريد مغادرة اللعبة؟")) {
-                location.reload(); // يعيد تحميل الصفحة للعودة لشاشة البداية وقطع الاتصال
+                location.reload(); 
             }
         }
 
@@ -239,12 +240,21 @@
             socket.emit('joinRoom', { playerName: name, roomCode: room });
         }
 
+        // عند إنشاء الغرفة (اللاعب الأول) يتم تحديث اسمه فوراً في الشاشة
         socket.on('roomCreated', (data) => {
-            myColor = data.color; currentRoom = data.roomCode; showGameScreen();
+            myColor = data.color; 
+            currentRoom = data.roomCode; 
+            playerNames.red = document.getElementById('playerName').value.trim();
+            document.getElementById('red-name').innerText = playerNames.red;
+            showGameScreen();
         });
 
+        // عند انضمام اللاعب الثاني، يتم حفظ اسمه مؤقتاً حتى تتم المزامنة
         socket.on('roomJoined', async (data) => {
-            myColor = data.color; currentRoom = data.roomCode; showGameScreen();
+            myColor = data.color; 
+            currentRoom = data.roomCode; 
+            playerNames.green = document.getElementById('playerName').value.trim();
+            showGameScreen();
             await setupVoice();
         });
 
@@ -274,7 +284,7 @@
         socket.on('gameStart', async (players) => {
             isGameStarted = true;
             
-            // تعيين وعرض أسماء اللاعبين
+            // مزامنة الأسماء بين اللاعبين ليعرف كل لاعب اسم خصمه
             const pRed = players.find(p => p.color === 'red');
             const pGreen = players.find(p => p.color === 'green');
             if(pRed) playerNames.red = pRed.name;
@@ -284,7 +294,7 @@
             document.getElementById('green-name').innerText = playerNames.green;
 
             initGame();
-            updateStatusUI();
+            updateStatusUI(); // عرض اسم اللاعب الذي عليه الدور
             
             if (myColor === 'red' && peerConnection) {
                 const offer = await peerConnection.createOffer();
@@ -358,10 +368,9 @@
             arrowEl.className = 'arrow';
             let symbol = '';
             
-            // حساب المسافة ديناميكياً باستخدام calc() و px لتجنب التداخل
             let leftStyle = `${fromNode.x}%`;
             let topStyle = `${fromNode.y}%`;
-            const offset = 40; // مسافة السهم عن المركز بالبكسل
+            const offset = 40; 
             
             if (toNode.y < fromNode.y) { symbol = '↑'; topStyle = `calc(${fromNode.y}% - ${offset}px)`; }
             else if (toNode.y > fromNode.y) { symbol = '↓'; topStyle = `calc(${fromNode.y}% + ${offset}px)`; }
@@ -395,6 +404,7 @@
             updateStatusUI();
         }
 
+        // دالة عرض الدور بالاسم الفعلي
         function updateStatusUI() {
             const statusEl = document.getElementById('status');
             const playerName = currentPlayer === 'red' ? playerNames.red : playerNames.green;
@@ -402,6 +412,7 @@
             statusEl.className = currentPlayer === 'red' ? 'turn-red' : 'turn-green';
         }
 
+        // دالة الفوز تعرض اسم الفائز الفعلي
         function checkWin() {
             const redWin = [9, 10, 11].every(id => pieces.filter(p => p.player === 'red').map(p => p.nodeId).includes(id));
             const greenWin = [0, 1, 2].every(id => pieces.filter(p => p.player === 'green').map(p => p.nodeId).includes(id));
